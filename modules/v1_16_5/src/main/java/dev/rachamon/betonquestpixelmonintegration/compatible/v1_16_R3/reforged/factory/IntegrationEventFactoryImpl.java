@@ -21,14 +21,10 @@ public class IntegrationEventFactoryImpl extends IntegrationEventFactory {
             BetonQuest.getInstance().registerObjectives("pixelmon.knockout.trainer", OnKnockoutTrainerPokemon.class);
             BetonQuest.getInstance().registerObjectives("pixelmon.knockout.player", OnKnockoutPlayerPokemon.class);
             BetonQuest.getInstance().registerObjectives("pixelmon.defeated", OnDefeated.class);
-            BetonQuest.getInstance().registerObjectives("pixelmon.defeated.wild", OnDefeatedByWild.class);
-            BetonQuest.getInstance().registerObjectives("pixelmon.defeated.trainer", OnDefeatedByTrainer.class);
-            BetonQuest.getInstance().registerObjectives("pixelmon.defeated.player", OnDefeatedByPlayer.class);
             BetonQuest.getInstance().registerObjectives("pixelmon.evolve.pre", OnPokemonEvolvePre.class);
             BetonQuest.getInstance().registerObjectives("pixelmon.evolve.post", OnPokemonEvolvePost.class);
             BetonQuest.getInstance().registerObjectives("pixelmon.trade.get", OnPokemonTradeGet.class);
             BetonQuest.getInstance().registerObjectives("pixelmon.trade.give", OnPokemonTradeGive.class);
-            BetonQuest.getInstance().registerObjectives("pixelmon.tile", OnTileEntityVicinity.class);
             BetonQuest.getInstance().registerObjectives("pixelmon.trainer.win", OnTrainerWin.class);
             BetonQuest.getInstance().registerObjectives("pixelmon.trainer.lose", OnTrainerLose.class);
 
