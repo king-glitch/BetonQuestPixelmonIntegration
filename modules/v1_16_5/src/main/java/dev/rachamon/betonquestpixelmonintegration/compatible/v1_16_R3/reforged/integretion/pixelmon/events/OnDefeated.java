@@ -2,9 +2,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.LostToWildPixelmonEvent;
-import com.pixelmonmod.pixelmon.api.events.PixelmonKnockoutEvent;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
-import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -21,7 +19,7 @@ public class OnDefeated extends Objective {
 
     protected String[] specs;
     protected int amount = 1;
-    protected Consumer<PixelmonKnockoutEvent> listener = this::onKnockout;
+    protected Consumer<LostToWildPixelmonEvent> listener = this::onLost;
 
 
     public OnDefeated(Instruction instruction) throws InstructionParseException {
@@ -60,7 +58,7 @@ public class OnDefeated extends Objective {
     }
 
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onKnockout(LostToWildPixelmonEvent event) {
+    public void onLost(LostToWildPixelmonEvent event) {
         if (event.isCanceled()) {
             return;
         }
