@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 public class OnTrainerLose extends Objective {
+    protected String trainer = "*";
     protected int amount = 1;
     protected Consumer<LostToTrainerEvent> listener = this::onLose;
 
@@ -21,6 +22,7 @@ public class OnTrainerLose extends Objective {
         super(instruction);
 
         template = OnTrainerWin.Data.class;
+        trainer = instruction.getOptional("trainer");
         amount = instruction.getPositive();
     }
 

@@ -15,7 +15,6 @@ public class BetonQuestPixelmonIntegration extends JavaPlugin {
     @Getter
     private IntegrationEventFactory integrationEventFactory;
 
-    private LoggerUtil logger;
     public BetonQuestPixelmonIntegration() {
         instance = this;
     }
@@ -23,7 +22,7 @@ public class BetonQuestPixelmonIntegration extends JavaPlugin {
     @Override
     public void onEnable() {
         Server server = Bukkit.getServer();
-        logger = new LoggerUtil(server, "BetonQuestPixelmonIntegration");
+        LoggerUtil logger = new LoggerUtil(server, "BetonQuestPixelmonIntegration");
         logger.info("Starting plugin...");
 
         if (Bukkit.getPluginManager().getPlugin("BetonQuest") == null || !Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("BetonQuest")).isEnabled()) {

@@ -2,6 +2,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -15,6 +16,7 @@ import java.util.function.Consumer;
 
 public class OnHatchPokemonEgg extends Objective {
 
+    protected String[] specs;
     protected int amount = 1;
     protected Consumer<EggHatchEvent.Post> listener = this::onEggHatched;
 
@@ -22,6 +24,7 @@ public class OnHatchPokemonEgg extends Objective {
         super(instruction);
 
         template = Data.class;
+        specs = instruction.getArray();
         amount = instruction.getPositive();
     }
 
@@ -65,6 +68,10 @@ public class OnHatchPokemonEgg extends Objective {
         }
 
         if (!checkConditions(player.getStringUUID())) {
+            return;
+        }
+
+        if (!SpecUtil.match(event.getPokemon(), SpecUtil.parseSpecs(specs))) {
             return;
         }
 

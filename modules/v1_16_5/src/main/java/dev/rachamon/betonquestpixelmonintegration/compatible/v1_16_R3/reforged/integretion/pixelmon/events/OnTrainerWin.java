@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 
 public class OnTrainerWin extends Objective {
     protected int amount = 1;
+    protected String trainer = "*";
     protected Consumer<BeatTrainerEvent> listener = this::onWin;
 
 
@@ -22,6 +23,7 @@ public class OnTrainerWin extends Objective {
         super(instruction);
 
         template = Data.class;
+        trainer = instruction.getOptional("trainer");
         amount = instruction.getPositive();
     }
 
@@ -68,6 +70,10 @@ public class OnTrainerWin extends Objective {
         }
 
         if (!checkConditions(player.getStringUUID())) {
+            return;
+        }
+
+        if (!trainer.equals("*") && !trainer.equals(event.trainer.getStringUUID())) {
             return;
         }
 

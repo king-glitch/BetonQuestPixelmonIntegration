@@ -3,7 +3,6 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.PixelmonTradeEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
