@@ -12,8 +12,8 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: "com.github.johnrengelman.shadow"
 
-group 'br.com.finalcraft'
-version '1.1.1'
+group 'dev.rachamon'
+version '0.0.1'
 
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
@@ -50,12 +50,11 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.24'
 }
 
-task buildAndMoveJars {
+tasks.register('buildAndMoveJars') {
     doLast {
         // Define the projects to be built and moved
         def projects = [
                 'modules/v1_16_5',
-                'modules/v1_20_2',
         ]
 
         // List to store the paths of the built JAR files
@@ -66,24 +65,11 @@ task buildAndMoveJars {
             // Execute the Gradle build for the project
             println("[PROJECT_COMPAT] Building project: ${project}")
 
-            def gradlewBat = System.getProperty('os.name').toLowerCase().contains('windows')
-                    ? 'gradlew.bat'
-                    : 'gradlew'
+            // Check if ${project}/project.substring(project.lastIndexOf('/') + 1)}-COMPAT.jar exists
+            def jarName = "${project.substring(project.lastIndexOf('/') + 1)}-COMPAT.jar";
+            def jarFile = file("$project/build/libs/${jarName}")
 
-            def buildResult = exec {
-                // Use the Gradle Wrapper in the project directory
-                workingDir project
-                commandLine gradlewBat, 'build'
-            }
-
-            // Check if the build was successful
-            if (buildResult.exitValue == 0) {
-                println("[PROJECT_COMPAT] Build Completed")
-
-                // Get the built JAR file
-                def jarName = "${project.substring(project.lastIndexOf('/') + 1)}-COMPAT.jar";
-                def jarFile = file("$project/build/libs/${jarName}")
-
+            if (jarFile.exists()) {
                 println("[PROJECT_COMPAT] Moving jar '${jarName}' to 'libs' directory")
 
                 def tempDir = file("libs")
@@ -93,16 +79,20 @@ task buildAndMoveJars {
 
                 //Add to jarFiles list
                 jarFiles.add(targetFile)
+                // Print a success message if the build was successful
+                println "[PROJECT_COMPAT] Build successful for project: $project"
+                // remove the build directory
+                jarFile.delete()
             } else {
                 // Print an error message if the build failed
-                println "Build failed for project: $project"
+                println "[PROJECT_COMPAT] Build failed for project: $project"
             }
         }
 
     }
 }
 
-clean{
+clean {
     doLast {
         fileTree(dir: 'libs', include: '**/*-COMPAT.jar').each { file ->
             file.delete()

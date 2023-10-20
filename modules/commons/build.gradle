@@ -36,6 +36,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+    compileOnly "br.com.finalcraft:EverNifeCore:2.0.3"
 
     //Annotations
     compileOnly 'org.jetbrains:annotations:24.0.0'
