@@ -2,7 +2,6 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.ApricornEvent;
-import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -69,6 +68,10 @@ public class OnApricornHarvest extends Objective {
         ApricornHarvestData data = (ApricornHarvestData) dataMap.get(player.getStringUUID());
 
         if (data == null) {
+            return;
+        }
+
+        if (!containsPlayer(player.getStringUUID())) {
             return;
         }
 

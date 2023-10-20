@@ -4,9 +4,9 @@ import pl.betoncraft.betonquest.Instruction;
 import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 
-public class OnHatchEgg extends Objective {
+public class OnDefeatedByPlayer extends Objective {
 
-    public OnHatchEgg(Instruction instruction) throws InstructionParseException {
+    public OnDefeatedByPlayer(Instruction instruction) throws InstructionParseException {
         super(instruction);
     }
 

@@ -1,5 +1,6 @@
 package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.integretion.pixelmon.events;
 
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import pl.betoncraft.betonquest.Instruction;
 import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.exceptions.InstructionParseException;
@@ -28,5 +29,10 @@ public class OnDefeated extends Objective {
     @Override
     public String getProperty(String name, String playerID) {
         return null;
+    }
+
+    @SubscribeEvent
+    public void onDefeated() {
+
     }
 }

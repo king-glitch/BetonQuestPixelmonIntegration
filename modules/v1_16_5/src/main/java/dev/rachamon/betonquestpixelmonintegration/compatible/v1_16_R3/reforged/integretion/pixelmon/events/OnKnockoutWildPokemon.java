@@ -1,10 +1,9 @@
 package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.integretion.pixelmon.events;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
+import com.pixelmonmod.pixelmon.api.events.PixelmonKnockoutEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
-import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,16 +14,17 @@ import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public class OnPokemonEvolvePre extends Objective {
+public class OnKnockoutWildPokemon extends Objective {
+
     protected String[] specs;
     protected int amount = 1;
-    protected Consumer<EvolveEvent.Pre> listener = this::onEvolve;
+    protected Consumer<PixelmonKnockoutEvent> listener = this::onKnockout;
 
 
-    public OnPokemonEvolvePre(Instruction instruction) throws InstructionParseException {
+    public OnKnockoutWildPokemon(Instruction instruction) throws InstructionParseException {
         super(instruction);
 
-        template = Data.class;
+        template = OnKnockout.Data.class;
         specs = instruction.getArray();
         amount = instruction.getPositive();
     }
@@ -57,13 +57,13 @@ public class OnPokemonEvolvePre extends Objective {
     }
 
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onEvolve(EvolveEvent.Pre event) {
+    public void onKnockout(PixelmonKnockoutEvent event) {
         if (event.isCanceled()) {
             return;
         }
 
-        ServerPlayerEntity player = event.getPlayer();
-        PixelmonEntity pixelmon = event.getEntity();
+        ServerPlayerEntity player = event.source.getPlayerOwner();
+        PixelmonEntity pixelmon = event.pokemon.entity;
         if (player == null || pixelmon == null) {
             return;
         }
@@ -76,7 +76,11 @@ public class OnPokemonEvolvePre extends Objective {
             return;
         }
 
-        Data data = (Data) dataMap.get(player.getStringUUID());
+        if (event.pokemon.getPlayerOwner() != null || event.pokemon.getTrainerOwner() != null) {
+            return;
+        }
+
+        OnKnockout.Data data = (OnKnockout.Data) dataMap.get(player.getStringUUID());
         // check if match the Pokémon specs
         if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
             return;
@@ -90,29 +94,5 @@ public class OnPokemonEvolvePre extends Objective {
 
         completeObjective(player.getStringUUID());
 
-    }
-
-    @Getter
-    public static class Data extends ObjectiveData {
-        public int amount;
-
-        public Data(final String instruction, final String playerID, final String objID) {
-            super(instruction, playerID, objID);
-            amount = Integer.parseInt(instruction);
-        }
-
-        public void subtract() {
-            amount--;
-            update();
-        }
-
-        public boolean isZero() {
-            return amount <= 0;
-        }
-
-        @Override
-        public String toString() {
-            return Integer.toString(amount);
-        }
     }
 }

@@ -1,9 +1,7 @@
 package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.integretion.pixelmon.events;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
-import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
+import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -15,17 +13,15 @@ import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public class OnPokemonEvolvePre extends Objective {
-    protected String[] specs;
+public class OnHatchPokemonEgg extends Objective {
+
     protected int amount = 1;
-    protected Consumer<EvolveEvent.Pre> listener = this::onEvolve;
+    protected Consumer<EggHatchEvent.Post> listener = this::onEggHatched;
 
-
-    public OnPokemonEvolvePre(Instruction instruction) throws InstructionParseException {
+    public OnHatchPokemonEgg(Instruction instruction) throws InstructionParseException {
         super(instruction);
 
         template = Data.class;
-        specs = instruction.getArray();
         amount = instruction.getPositive();
     }
 
@@ -48,7 +44,7 @@ public class OnPokemonEvolvePre extends Objective {
     public String getProperty(String name, String playerID) {
         switch (name.toLowerCase(Locale.ROOT)) {
             case "left":
-                return Integer.toString(((OnKnockout.Data) dataMap.get(playerID)).getAmount());
+                return Integer.toString(((Data) dataMap.get(playerID)).getAmount());
             case "amount":
                 return Integer.toString(amount);
             default:
@@ -57,16 +53,12 @@ public class OnPokemonEvolvePre extends Objective {
     }
 
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onEvolve(EvolveEvent.Pre event) {
+    public void onEggHatched(EggHatchEvent.Post event) {
         if (event.isCanceled()) {
             return;
         }
 
         ServerPlayerEntity player = event.getPlayer();
-        PixelmonEntity pixelmon = event.getEntity();
-        if (player == null || pixelmon == null) {
-            return;
-        }
 
         if (!containsPlayer(player.getStringUUID())) {
             return;
@@ -77,8 +69,8 @@ public class OnPokemonEvolvePre extends Objective {
         }
 
         Data data = (Data) dataMap.get(player.getStringUUID());
-        // check if match the Pokémon specs
-        if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
+
+        if (data == null) {
             return;
         }
 
@@ -115,4 +107,6 @@ public class OnPokemonEvolvePre extends Objective {
             return Integer.toString(amount);
         }
     }
+
+
 }

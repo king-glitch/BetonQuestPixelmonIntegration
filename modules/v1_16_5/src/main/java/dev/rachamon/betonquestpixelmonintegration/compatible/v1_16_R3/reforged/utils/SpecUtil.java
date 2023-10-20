@@ -3,6 +3,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 import com.google.common.collect.Lists;
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 
 import java.util.List;
@@ -11,6 +12,16 @@ public class SpecUtil {
     public static boolean match(PixelmonEntity pixelmon, List<PokemonSpecification> requirementSpecs) {
         for (PokemonSpecification requirementSpec : requirementSpecs) {
             if (requirementSpec != null && !requirementSpec.matches(pixelmon)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean match(Pokemon pokemon, List<PokemonSpecification> requirementSpecs) {
+        for (PokemonSpecification requirementSpec : requirementSpecs) {
+            if (requirementSpec != null && !requirementSpec.matches(pokemon)) {
                 return false;
             }
         }

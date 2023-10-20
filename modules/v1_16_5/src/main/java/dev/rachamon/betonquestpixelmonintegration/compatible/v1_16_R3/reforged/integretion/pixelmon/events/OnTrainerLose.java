@@ -1,10 +1,7 @@
 package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.integretion.pixelmon.events;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
-import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
-import lombok.Getter;
+import com.pixelmonmod.pixelmon.api.events.LostToTrainerEvent;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,17 +12,15 @@ import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public class OnPokemonEvolvePre extends Objective {
-    protected String[] specs;
+public class OnTrainerLose extends Objective {
     protected int amount = 1;
-    protected Consumer<EvolveEvent.Pre> listener = this::onEvolve;
+    protected Consumer<LostToTrainerEvent> listener = this::onLose;
 
 
-    public OnPokemonEvolvePre(Instruction instruction) throws InstructionParseException {
+    public OnTrainerLose(Instruction instruction) throws InstructionParseException {
         super(instruction);
 
-        template = Data.class;
-        specs = instruction.getArray();
+        template = OnTrainerWin.Data.class;
         amount = instruction.getPositive();
     }
 
@@ -48,7 +43,7 @@ public class OnPokemonEvolvePre extends Objective {
     public String getProperty(String name, String playerID) {
         switch (name.toLowerCase(Locale.ROOT)) {
             case "left":
-                return Integer.toString(((OnKnockout.Data) dataMap.get(playerID)).getAmount());
+                return Integer.toString(((OnTrainerWin.Data) dataMap.get(playerID)).getAmount());
             case "amount":
                 return Integer.toString(amount);
             default:
@@ -57,14 +52,13 @@ public class OnPokemonEvolvePre extends Objective {
     }
 
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onEvolve(EvolveEvent.Pre event) {
+    public void onLose(LostToTrainerEvent event) {
         if (event.isCanceled()) {
             return;
         }
 
-        ServerPlayerEntity player = event.getPlayer();
-        PixelmonEntity pixelmon = event.getEntity();
-        if (player == null || pixelmon == null) {
+        ServerPlayerEntity player = event.player;
+        if (player == null) {
             return;
         }
 
@@ -76,11 +70,7 @@ public class OnPokemonEvolvePre extends Objective {
             return;
         }
 
-        Data data = (Data) dataMap.get(player.getStringUUID());
-        // check if match the Pokémon specs
-        if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
-            return;
-        }
+        OnTrainerWin.Data data = (OnTrainerWin.Data) dataMap.get(player.getStringUUID());
 
         data.subtract();
 
@@ -90,29 +80,5 @@ public class OnPokemonEvolvePre extends Objective {
 
         completeObjective(player.getStringUUID());
 
-    }
-
-    @Getter
-    public static class Data extends ObjectiveData {
-        public int amount;
-
-        public Data(final String instruction, final String playerID, final String objID) {
-            super(instruction, playerID, objID);
-            amount = Integer.parseInt(instruction);
-        }
-
-        public void subtract() {
-            amount--;
-            update();
-        }
-
-        public boolean isZero() {
-            return amount <= 0;
-        }
-
-        @Override
-        public String toString() {
-            return Integer.toString(amount);
-        }
     }
 }

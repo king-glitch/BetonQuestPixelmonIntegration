@@ -1,7 +1,7 @@
 package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.integretion.pixelmon.events;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
+import com.pixelmonmod.pixelmon.api.events.PixelmonKnockoutEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import lombok.Getter;
@@ -15,13 +15,13 @@ import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public class OnPokemonEvolvePre extends Objective {
+public class OnKnockout extends Objective {
     protected String[] specs;
     protected int amount = 1;
-    protected Consumer<EvolveEvent.Pre> listener = this::onEvolve;
+    protected Consumer<PixelmonKnockoutEvent> listener = this::onKnockout;
 
 
-    public OnPokemonEvolvePre(Instruction instruction) throws InstructionParseException {
+    public OnKnockout(Instruction instruction) throws InstructionParseException {
         super(instruction);
 
         template = Data.class;
@@ -48,7 +48,7 @@ public class OnPokemonEvolvePre extends Objective {
     public String getProperty(String name, String playerID) {
         switch (name.toLowerCase(Locale.ROOT)) {
             case "left":
-                return Integer.toString(((OnKnockout.Data) dataMap.get(playerID)).getAmount());
+                return Integer.toString(((Data) dataMap.get(playerID)).getAmount());
             case "amount":
                 return Integer.toString(amount);
             default:
@@ -57,16 +57,17 @@ public class OnPokemonEvolvePre extends Objective {
     }
 
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onEvolve(EvolveEvent.Pre event) {
+    public void onKnockout(PixelmonKnockoutEvent event) {
         if (event.isCanceled()) {
             return;
         }
 
-        ServerPlayerEntity player = event.getPlayer();
-        PixelmonEntity pixelmon = event.getEntity();
+        ServerPlayerEntity player = event.source.getPlayerOwner();
+        PixelmonEntity pixelmon = event.pokemon.entity;
         if (player == null || pixelmon == null) {
             return;
         }
+
 
         if (!containsPlayer(player.getStringUUID())) {
             return;
