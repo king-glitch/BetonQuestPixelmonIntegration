@@ -1,0 +1,3 @@
+rootProject.name = 'BetonQuestPixelmonIntegration'
+
+include 'modules:commons'
