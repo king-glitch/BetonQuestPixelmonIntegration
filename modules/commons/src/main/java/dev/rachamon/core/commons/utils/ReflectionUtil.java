@@ -1,6 +1,7 @@
 package dev.rachamon.core.commons.utils;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -16,6 +17,65 @@ import java.util.stream.Collectors;
  * @author EverNife
  */
 public class ReflectionUtil {
+
+    /**
+     * Retrieve a field accessor for a specific field type and name.
+     *
+     * @param target - the target type.
+     * @param name   - the name of the field, or NULL to ignore.
+     * @return The field accessor.
+     */
+    public static <T> FieldAccessor<T> getField(Class<?> target, String name) {
+        return getField(target, name, null, 0);
+    }
+
+    // Common method
+    private static <T> FieldAccessor<T> getField(Class<?> target, String name, Class<T> fieldType, int index) {
+        for (final Field field : target.getDeclaredFields()) {
+            if ((name == null || field.getName().equals(name)) && (fieldType == null || fieldType.isAssignableFrom(field.getType())) && index-- <= 0) {
+                field.setAccessible(true);
+
+                // A function for retrieving a specific field value
+                return new FieldAccessor<T>() {
+
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public T get(Object target) {
+                        try {
+                            return (T) field.get(target);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException("Cannot access reflection.", e);
+                        }
+                    }
+
+                    @Override
+                    public void set(Object target, Object value) {
+                        try {
+                            field.set(target, value);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException("Cannot access reflection.", e);
+                        }
+                    }
+
+                    @Override
+                    public boolean hasField(Object target) {
+                        // target instanceof DeclaringClass
+                        return field.getDeclaringClass().isAssignableFrom(target.getClass());
+                    }
+
+                    @Override
+                    public Field getTheField() {
+                        return field;
+                    }
+                };
+            }
+        }
+
+        // Search in parent classes
+        if (target.getSuperclass() != null) return getField(target.getSuperclass(), name, fieldType, index);
+
+        throw new IllegalArgumentException("Cannot find field with type " + fieldType);
+    }
 
     /**
      * Search for the first publicly and privately defined method of the given name and parameter count.
@@ -41,7 +101,6 @@ public class ReflectionUtil {
      * @throws IllegalStateException If we cannot find this method.
      */
     public static MethodInvoker<?> getTypedMethod(Class<?> clazz, String methodName, Class<?> returnType, Class<?>... params) {
-        //System.out.println(String.format("Looking for: %s(%s).", methodName, Arrays.asList(params)));
         List<Method> sortedMethodsByArgNumber = Arrays.stream(clazz.getDeclaredMethods()).sorted(Comparator.comparingInt(method -> method.getParameterTypes().length)).collect(Collectors.toList());
         for (final Method method : sortedMethodsByArgNumber) {
             if ((methodName == null || method.getName().equals(methodName)) && (returnType == null || method.getReturnType().equals(returnType)) && (params.length == 0 || Arrays.equals(method.getParameterTypes(), params))) {
@@ -121,7 +180,6 @@ public class ReflectionUtil {
         throw new IllegalStateException(String.format("Unable to find constructor for %s (%s). \nPossible Constructors: %s", clazz, Arrays.asList(params), possibleConstructors));
     }
 
-
     /**
      * Retrieve a class from its full name.
      *
@@ -136,7 +194,6 @@ public class ReflectionUtil {
             throw new IllegalArgumentException("Cannot find " + lookupName, e);
         }
     }
-
 
     /**
      * Check if two arrays of classes are equal, ignoring the fact of they being primitives
@@ -172,10 +229,10 @@ public class ReflectionUtil {
             }
 
             try {
-                Object primitve = clazz1.isPrimitive() ? clazz1 : clazz2;
-                Object nonPrimitveInnerType = clazz1.isPrimitive() ? br.com.finalcraft.evernifecore.util.FCReflectionUtil.getField(clazz2, "TYPE").get(null) : br.com.finalcraft.evernifecore.util.FCReflectionUtil.getField(clazz1, "TYPE").get(null);
+                Object primitive = clazz1.isPrimitive() ? clazz1 : clazz2;
+                Object nonPrimitiveInnerType = clazz1.isPrimitive() ? ReflectionUtil.getField(clazz2, "TYPE").get(null) : ReflectionUtil.getField(clazz1, "TYPE").get(null);
 
-                if (Objects.equals(primitve, nonPrimitveInnerType)) {
+                if (Objects.equals(primitive, nonPrimitiveInnerType)) {
                     continue;
                 }
             } catch (Exception ignored) {
@@ -185,6 +242,7 @@ public class ReflectionUtil {
         }
         return true;
     }
+
 
     /**
      * An interface for invoking a specific method.
@@ -215,6 +273,44 @@ public class ReflectionUtil {
          * @return The constructed object.
          */
         T invoke(Object... arguments);
+    }
+
+    /**
+     * An interface for retrieving the field content.
+     *
+     * @param <T> - field type.
+     */
+    public interface FieldAccessor<T> {
+        /**
+         * Retrieve the content of a field.
+         *
+         * @param target - the target object, or NULL for a static field.
+         * @return The value of the field.
+         */
+        T get(Object target);
+
+        /**
+         * Set the content of a field.
+         *
+         * @param target - the target object, or NULL for a static field.
+         * @param value  - the new value of the field.
+         */
+        void set(Object target, Object value);
+
+        /**
+         * Determine if the given object has this field.
+         *
+         * @param target - the object to test.
+         * @return TRUE if it does, FALSE otherwise.
+         */
+        boolean hasField(Object target);
+
+        /**
+         * Get the target Field
+         *
+         * @return return the target Field
+         */
+        Field getTheField();
     }
 }
 

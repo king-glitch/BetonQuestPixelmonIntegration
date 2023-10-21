@@ -1,8 +1,8 @@
 package dev.rachamon.core.commons.factory;
 
-import br.com.finalcraft.evernifecore.version.MCVersion;
 import dev.rachamon.core.commons.utils.LoggerUtil;
 import dev.rachamon.core.commons.utils.ReflectionUtil;
+import dev.rachamon.core.commons.version.MCVersion;
 
 public abstract class IntegrationFactory {
     public static IntegrationFactory create(LoggerUtil logger, boolean isDebug) {
