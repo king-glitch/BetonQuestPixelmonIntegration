@@ -3,6 +3,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.PixelmonKnockoutEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.factory.IntegrationFactoryImpl;
 import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -11,8 +12,9 @@ import pl.betoncraft.betonquest.Instruction;
 import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 
-import java.util.Locale;
 import java.util.function.Consumer;
+
+import static dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.integretion.pixelmon.events.OnKnockoutPlayerPokemon.getString;
 
 public class OnKnockoutTrainerPokemon extends Objective {
     protected String[] specs;
@@ -45,14 +47,7 @@ public class OnKnockoutTrainerPokemon extends Objective {
 
     @Override
     public String getProperty(String name, String playerID) {
-        switch (name.toLowerCase(Locale.ROOT)) {
-            case "left":
-                return Integer.toString(((OnKnockout.Data) dataMap.get(playerID)).getAmount());
-            case "amount":
-                return Integer.toString(amount);
-            default:
-                return "";
-        }
+        return getString(name, (OnKnockout.Data) dataMap.get(playerID), amount, playerID);
     }
 
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
@@ -78,6 +73,12 @@ public class OnKnockoutTrainerPokemon extends Objective {
         if (event.pokemon.getTrainerOwner() == null) {
             return;
         }
+
+
+        IntegrationFactoryImpl.logger.debug("pixelmon.knockout.trainer: " + event.source.getPlayerOwner());
+        IntegrationFactoryImpl.logger.debug("pixelmon.knockout.trainer: " + event.pokemon.getPokemonName());
+        IntegrationFactoryImpl.logger.debug("pixelmon.knockout.trainer: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
+
 
         OnKnockout.Data data = (OnKnockout.Data) dataMap.get(player.getStringUUID());
         // check if match the Pokémon specs

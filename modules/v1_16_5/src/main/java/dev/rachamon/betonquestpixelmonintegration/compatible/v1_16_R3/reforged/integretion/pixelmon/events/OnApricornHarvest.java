@@ -2,6 +2,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.ApricornEvent;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.factory.IntegrationFactoryImpl;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -33,7 +34,7 @@ public class OnApricornHarvest extends Objective {
 
     @Override
     public void start() {
-
+        Pixelmon.EVENT_BUS.addListener(listener);
     }
 
     @Override
@@ -79,7 +80,13 @@ public class OnApricornHarvest extends Objective {
             return;
         }
 
-        if (apricorn.equals("*") || event.getApricorn().apricorn().apricorn.name().contains(apricorn.toLowerCase())) {
+
+        IntegrationFactoryImpl.logger.debug("pixelmon.apricorn.harvest: " + event.getApricorn().apricorn().apricorn.name());
+        IntegrationFactoryImpl.logger.debug("pixelmon.apricorn.harvest: " + apricorn);
+        IntegrationFactoryImpl.logger.debug("pixelmon.apricorn.harvest: " + (apricorn.equals("*") || event.getApricorn().apricorn().apricorn.name().toLowerCase().contains(apricorn.toLowerCase())));
+
+
+        if (apricorn.equals("*") || event.getApricorn().apricorn().apricorn.name().toLowerCase().contains(apricorn.toLowerCase())) {
             data.subtract();
         }
 

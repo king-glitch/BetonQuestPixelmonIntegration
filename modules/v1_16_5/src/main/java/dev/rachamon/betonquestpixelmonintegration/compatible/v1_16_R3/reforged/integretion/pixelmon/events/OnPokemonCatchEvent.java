@@ -3,6 +3,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.factory.IntegrationFactoryImpl;
 import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -60,6 +61,11 @@ public class OnPokemonCatchEvent extends Objective {
         if (!checkConditions(player.getStringUUID())) {
             return;
         }
+
+
+        IntegrationFactoryImpl.logger.debug("pixelmon.catch: " + event.getPokemon().getPokemonName());
+        IntegrationFactoryImpl.logger.debug("pixelmon.catch: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
+
 
         PokemonCatchData data = (PokemonCatchData) dataMap.get(player.getStringUUID());
 

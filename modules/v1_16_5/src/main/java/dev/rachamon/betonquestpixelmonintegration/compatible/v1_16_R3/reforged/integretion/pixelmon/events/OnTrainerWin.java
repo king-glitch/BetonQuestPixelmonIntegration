@@ -2,6 +2,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.BeatTrainerEvent;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.factory.IntegrationFactoryImpl;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -25,6 +26,10 @@ public class OnTrainerWin extends Objective {
         template = Data.class;
         trainer = instruction.getOptional("trainer");
         amount = instruction.getPositive();
+
+        if (trainer == null) {
+            trainer = "*";
+        }
     }
 
     @Override
@@ -72,6 +77,11 @@ public class OnTrainerWin extends Objective {
         if (!checkConditions(player.getStringUUID())) {
             return;
         }
+
+
+        IntegrationFactoryImpl.logger.debug("pixelmon.trainer.win: " + event.trainer.getStringUUID());
+        IntegrationFactoryImpl.logger.debug("pixelmon.trainer.win: " + trainer);
+
 
         if (!trainer.equals("*") && !trainer.equals(event.trainer.getStringUUID())) {
             return;

@@ -3,6 +3,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.factory.IntegrationFactoryImpl;
 import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -12,8 +13,9 @@ import pl.betoncraft.betonquest.Instruction;
 import pl.betoncraft.betonquest.api.Objective;
 import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 
-import java.util.Locale;
 import java.util.function.Consumer;
+
+import static dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.integretion.pixelmon.events.OnKnockoutPlayerPokemon.getString;
 
 public class OnPokemonEvolvePre extends Objective {
     protected String[] specs;
@@ -46,14 +48,7 @@ public class OnPokemonEvolvePre extends Objective {
 
     @Override
     public String getProperty(String name, String playerID) {
-        switch (name.toLowerCase(Locale.ROOT)) {
-            case "left":
-                return Integer.toString(((OnKnockout.Data) dataMap.get(playerID)).getAmount());
-            case "amount":
-                return Integer.toString(amount);
-            default:
-                return "";
-        }
+        return getString(name, (OnKnockout.Data) dataMap.get(playerID), amount, playerID);
     }
 
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
@@ -75,6 +70,11 @@ public class OnPokemonEvolvePre extends Objective {
         if (!checkConditions(player.getStringUUID())) {
             return;
         }
+
+
+        IntegrationFactoryImpl.logger.debug("pixelmon.evolve.pre: " + event.getPokemon().getDisplayName());
+        IntegrationFactoryImpl.logger.debug("pixelmon.evolve.pre: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
+
 
         Data data = (Data) dataMap.get(player.getStringUUID());
         // check if match the Pokémon specs

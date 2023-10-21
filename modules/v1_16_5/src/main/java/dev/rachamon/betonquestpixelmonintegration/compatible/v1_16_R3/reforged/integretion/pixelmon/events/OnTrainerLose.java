@@ -2,6 +2,8 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.LostToTrainerEvent;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.factory.IntegrationFactoryImpl;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,6 +26,10 @@ public class OnTrainerLose extends Objective {
         template = OnTrainerWin.Data.class;
         trainer = instruction.getOptional("trainer");
         amount = instruction.getPositive();
+
+        if (trainer == null) {
+            trainer = "*";
+        }
     }
 
     @Override
@@ -69,6 +75,15 @@ public class OnTrainerLose extends Objective {
         }
 
         if (!checkConditions(player.getStringUUID())) {
+            return;
+        }
+
+
+        IntegrationFactoryImpl.logger.debug("pixelmon.trainer.lose: " + event.trainer.getStringUUID());
+        IntegrationFactoryImpl.logger.debug("pixelmon.trainer.lose: " + trainer);
+
+
+        if (!trainer.equals("*") && !trainer.equals(event.trainer.getStringUUID())) {
             return;
         }
 

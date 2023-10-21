@@ -1,6 +1,6 @@
 package dev.rachamon.betonquestpixelmonintegration;
 
-import dev.rachamon.core.commons.factory.IntegrationEventFactory;
+import dev.rachamon.core.commons.factory.IntegrationFactory;
 import dev.rachamon.core.commons.utils.LoggerUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -13,7 +13,8 @@ public class BetonQuestPixelmonIntegration extends JavaPlugin {
     @Getter
     public static BetonQuestPixelmonIntegration instance;
     @Getter
-    private IntegrationEventFactory integrationEventFactory;
+    private IntegrationFactory integrationFactory;
+    public LoggerUtil logger;
 
     public BetonQuestPixelmonIntegration() {
         instance = this;
@@ -22,17 +23,17 @@ public class BetonQuestPixelmonIntegration extends JavaPlugin {
     @Override
     public void onEnable() {
         Server server = Bukkit.getServer();
-        LoggerUtil logger = new LoggerUtil(server, "BetonQuestPixelmonIntegration");
+        logger = new LoggerUtil(server, "BetonQuestPixelmonIntegration");
         logger.info("Starting plugin...");
 
         if (Bukkit.getPluginManager().getPlugin("BetonQuest") == null || !Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("BetonQuest")).isEnabled()) {
-            System.out.println("BetonQuest not found!");
+            logger.error("BetonQuest not found or not enabled!");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
         logger.info("Registering integrations...");
-        integrationEventFactory = IntegrationEventFactory.create(logger);
+        integrationFactory = IntegrationFactory.create(logger, false);
         logger.info("Integrations registered!");
 
         logger.info("Plugin started!");
@@ -40,7 +41,6 @@ public class BetonQuestPixelmonIntegration extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        System.out.println("Stopping plugin...");
-        integrationEventFactory.unregister();
+        logger.info("Stopping plugin...");
     }
 }

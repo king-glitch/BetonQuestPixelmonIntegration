@@ -2,6 +2,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.factory.IntegrationFactoryImpl;
 import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -70,6 +71,11 @@ public class OnHatchPokemonEgg extends Objective {
         if (!checkConditions(player.getStringUUID())) {
             return;
         }
+
+
+        IntegrationFactoryImpl.logger.debug("pixelmon.hatch: " + event.getPokemon().getDisplayName());
+        IntegrationFactoryImpl.logger.debug("pixelmon.hatch: " + SpecUtil.match(event.getPokemon(), SpecUtil.parseSpecs(specs)));
+
 
         if (!SpecUtil.match(event.getPokemon(), SpecUtil.parseSpecs(specs))) {
             return;

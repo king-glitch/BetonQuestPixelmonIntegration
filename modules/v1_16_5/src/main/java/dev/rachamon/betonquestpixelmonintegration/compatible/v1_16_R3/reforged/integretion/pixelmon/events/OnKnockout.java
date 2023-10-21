@@ -3,6 +3,7 @@ package dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.PixelmonKnockoutEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.factory.IntegrationFactoryImpl;
 import dev.rachamon.betonquestpixelmonintegration.compatible.v1_16_R3.reforged.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -76,6 +77,12 @@ public class OnKnockout extends Objective {
         if (!checkConditions(player.getStringUUID())) {
             return;
         }
+
+
+        IntegrationFactoryImpl.logger.debug("pixelmon.knockout: " + event.source.getPlayerOwner().getName());
+        IntegrationFactoryImpl.logger.debug("pixelmon.knockout: " + event.pokemon.getPokemonName());
+        IntegrationFactoryImpl.logger.debug("pixelmon.knockout: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
+
 
         Data data = (Data) dataMap.get(player.getStringUUID());
         // check if match the Pokémon specs

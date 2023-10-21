@@ -65,7 +65,6 @@ tasks.register('buildAndMoveJars') {
             // Execute the Gradle build for the project
             println("[PROJECT_COMPAT] Building project: ${project}")
 
-            // Check if ${project}/project.substring(project.lastIndexOf('/') + 1)}-COMPAT.jar exists
             def jarName = "${project.substring(project.lastIndexOf('/') + 1)}-COMPAT.jar";
             def jarFile = file("$project/build/libs/${jarName}")
 
