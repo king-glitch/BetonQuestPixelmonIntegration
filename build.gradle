@@ -19,7 +19,7 @@ targetCompatibility = 1.8
 sourceCompatibility = 1.8
 
 compileJava.options.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
@@ -34,12 +34,15 @@ repositories {
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
     }
     maven { url = "https://jitpack.io" }
+
 }
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
 
-    implementation project(':modules:commons')
+    compileOnly 'org.spongepowered:configurate-yaml:4.1.2'
+
+    implementation project(':modules:api')
 
     implementation fileTree(dir: 'libs', include: ['*.jar']) // Include all .jar files in the 'libs' directory
 
@@ -48,6 +51,7 @@ dependencies {
 
     //Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 tasks.register('buildAndMoveJars') {

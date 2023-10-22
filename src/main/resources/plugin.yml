@@ -1,7 +1,7 @@
-name: BetonQuestPixelmonIntegration
+name: RachamonCore
 version: 0.0.1
 author: Rachamon
-main: dev.rachamon.betonquestpixelmonintegration.BetonQuestPixelmonIntegration
+main: dev.rachamon.rachamoncore.RachamonCore
 depend: [ BetonQuest ]
 softdepend: [ ]
 api-version: 1.13

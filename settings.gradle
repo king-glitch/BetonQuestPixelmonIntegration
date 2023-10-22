@@ -1,3 +1,3 @@
-rootProject.name = 'BetonQuestPixelmonIntegration'
+rootProject.name = 'RachamonCore'
 
-include 'modules:commons'
+include 'modules:api'
