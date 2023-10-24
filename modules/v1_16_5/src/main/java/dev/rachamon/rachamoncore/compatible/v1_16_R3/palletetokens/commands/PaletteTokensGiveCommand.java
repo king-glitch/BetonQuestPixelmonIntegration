@@ -70,13 +70,14 @@ public class PaletteTokensGiveCommand extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        String itemName = module.getConfig().getTokenTemplate().getPokemon();
+        String itemName = module.getConfig().getTokenTemplate().getPokemon().replaceAll("&([0-9a-fA-Fk-oK-OrR])", "§$1");;
         String[] itemLore = module.getConfig().getTokenTemplate().getPalette();
 
         itemName = itemName.replace("{pokemon}", pokemon);
         for (int i = 0; i < itemLore.length; i++) {
             itemLore[i] = itemLore[i].replace("{pokemon}", pokemon);
             itemLore[i] = itemLore[i].replace("{palette}", palette);
+            itemLore[i] = itemLore[i].replaceAll("&([0-9a-fA-Fk-oK-OrR])", "§$1");
         }
 
         Material material = Material.getMaterial(module.getConfig().getTokenTemplate().getMaterial());
@@ -113,7 +114,10 @@ public class PaletteTokensGiveCommand extends AbstractCommand {
 
         target.getInventory().addItem(item);
 
-        this.module.getLocale().from(s -> s.getGeneralConfig().getSuccessfullySendTokenToPlayer()).process("pokemon", pokemon).process("palette", palette).process("player", target.getName()).send(sender);
+        if (target != sender) {
+            this.module.getLocale().from(s -> s.getGeneralConfig().getSuccessfullySendTokenToPlayer()).process("pokemon", pokemon).process("palette", palette).process("player", target.getName()).send(sender);
+        }
+
         this.module.getLocale().from(s -> s.getGeneralConfig().getSuccessfullyRetrieveToken()).process("pokemon", pokemon).process("palette", palette).send(target);
 
         return ReturnType.SUCCESS;
@@ -134,7 +138,6 @@ public class PaletteTokensGiveCommand extends AbstractCommand {
                 PokemonSpecification spec = PokemonSpecificationProxy.create(args[0]);
                 Pokemon poke = spec.create();
                 List<String> palettes = new ArrayList<>();
-                this.module.getModuleLogger().info("poke: " + PokemonSpecificationProxy.create(args[0]).create().getSpecies().getName() + " : " + PokemonSpecificationProxy.create(new String[]{args[0]}).create().getSpecies().getName());
                 for (Stats stats : poke.getSpecies().getForms()) {
                     for (GenderProperties gender : stats.getGenderProperties()) {
                         for (PaletteProperties palette : gender.getPalettes()) {
@@ -155,7 +158,7 @@ public class PaletteTokensGiveCommand extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "rachamoncore.command.palettetokens.give";
+        return "rachamoncore.module.palettetokens.command.give";
     }
 
     @Override

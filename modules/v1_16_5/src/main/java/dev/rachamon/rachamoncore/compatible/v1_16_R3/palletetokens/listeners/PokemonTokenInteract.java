@@ -22,17 +22,18 @@ public class PokemonTokenInteract {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onPokemonTokenInteract(PlayerInteractEvent.EntityInteract event) {
         if (event.isCanceled()) {
-            this.plugin.getModuleLogger().debug("PokemonTokenInteract is canceled");
+            return;
+        }
+
+        if (event.getHand().equals(Hand.OFF_HAND)) {
             return;
         }
 
         if (event.getPlayer().getItemInHand(Hand.MAIN_HAND).isEmpty()) {
-            this.plugin.getModuleLogger().debug("PokemonTokenInteract player.getItemInUse() is null");
             return;
         }
 
         if (!(event.getTarget() instanceof PixelmonEntity)) {
-            this.plugin.getModuleLogger().debug("PokemonTokenInteract entity is not PixelmonEntity: " + event.getEntity().getClass().getName());
             return;
         }
 
@@ -79,7 +80,6 @@ public class PokemonTokenInteract {
             return;
         }
 
-        event.setCanceled(true);
 
         pixelmon.resetDataWatchers();
 

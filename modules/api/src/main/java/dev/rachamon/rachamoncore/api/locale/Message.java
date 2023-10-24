@@ -30,7 +30,7 @@ public class Message {
             }
         }
 
-        this.message = message.replaceAll("&([a-z0-9])", "§$1");
+        this.message = message.replaceAll("&([0-9a-fA-Fk-oK-OrR])", "§$1");
     }
 
 

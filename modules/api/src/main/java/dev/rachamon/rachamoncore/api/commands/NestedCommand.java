@@ -11,13 +11,11 @@ public class NestedCommand {
         this.parent = parent;
     }
 
-    public NestedCommand addSubCommand(AbstractCommand command) {
+    public void addSubCommand(AbstractCommand command) {
         command.getCommands().forEach(cmd -> children.put(cmd.toLowerCase(), command));
-        return this;
     }
 
-    public NestedCommand addSubCommands(AbstractCommand... commands) {
+    public void addSubCommands(AbstractCommand... commands) {
         Stream.of(commands).forEach(command -> command.getCommands().forEach(cmd -> children.put(cmd.toLowerCase(), command)));
-        return this;
     }
 }
