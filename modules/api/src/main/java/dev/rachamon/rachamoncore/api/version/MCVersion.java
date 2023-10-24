@@ -1,5 +1,8 @@
 package dev.rachamon.rachamoncore.api.version;
 
+import lombok.Getter;
+
+@Getter
 public enum MCVersion {
     v1_7_10(MCDetailedVersion.v1_7_R4),
     v1_12(MCDetailedVersion.v1_12_R2),
@@ -16,10 +19,6 @@ public enum MCVersion {
 
     MCVersion(MCDetailedVersion detailedVersion) {
         this.detailedVersion = detailedVersion;
-    }
-
-    public MCDetailedVersion getDetailedVersion() {
-        return detailedVersion;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

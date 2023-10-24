@@ -5,3 +5,20 @@ main: dev.rachamon.rachamoncore.RachamonCore
 depend: [ BetonQuest ]
 softdepend: [ ]
 api-version: 1.13
+
+commands:
+    rachamoncore:
+        description: RachamonCore Command
+        usage: /<command> [args]
+        aliases: [ rc ]
+        default: true
+    palettetokens:
+        description: PaletteTokens Command
+        usage: /<command> [args]
+        aliases: [ pt ]
+        default: true
+    pixelmonbooster:
+        description: PixelmonBooster Command
+        usage: /<command> [args]
+        aliases: [ pb ]
+        default: true

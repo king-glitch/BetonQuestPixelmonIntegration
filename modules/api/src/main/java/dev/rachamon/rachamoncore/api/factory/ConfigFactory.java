@@ -21,7 +21,6 @@ public class ConfigFactory<P extends IModuleFactory<?>, T> {
     private final P plugin;
     private ConfigurationNode configRoot;
     private YamlConfigurationLoader configLoader;
-    private Class<T> classType;
     private String header;
 
     public ConfigFactory(P plugin, String fileName) {
@@ -31,7 +30,6 @@ public class ConfigFactory<P extends IModuleFactory<?>, T> {
     }
 
     public T build(Class<T> clazz) {
-        this.classType = clazz;
         try {
             File mainConfig = new File(this.plugin.getDirectory().toFile(), this.getName());
             if (!mainConfig.exists()) {
@@ -45,7 +43,7 @@ public class ConfigFactory<P extends IModuleFactory<?>, T> {
 
             this.configLoader = YamlConfigurationLoader.builder().indent(4).nodeStyle(NodeStyle.BLOCK).file(mainConfig).build();
             this.configRoot = configLoader.load(ConfigurationOptions.defaults().header(this.header));
-            this.root = configRoot.get(TypeToken.get(this.classType));
+            this.root = configRoot.get(TypeToken.get(clazz));
 
             this.save();
             this.plugin.getModuleLogger().success("loaded " + this.getName() + " configuration...");

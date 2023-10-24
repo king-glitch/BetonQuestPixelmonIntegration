@@ -1,6 +1,7 @@
 package dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.factory;
 
 import dev.rachamon.rachamoncore.api.IModuleFactory;
+import dev.rachamon.rachamoncore.api.commands.CommandManager;
 import dev.rachamon.rachamoncore.api.factory.modules.BetonQuestPixelmonIntegrationFactory;
 import dev.rachamon.rachamoncore.api.utils.LoggerUtil;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.events.*;
@@ -16,10 +17,13 @@ import java.util.HashMap;
 public class BetonQuestObjectiveFactoryImpl extends BetonQuestPixelmonIntegrationFactory {
     private final LoggerUtil moduleLogger;
     private Path directory;
+    @Getter
     public static BetonQuestObjectiveFactoryImpl instance;
+    private final JavaPlugin plugin;
 
     public BetonQuestObjectiveFactoryImpl(IModuleFactory<? extends JavaPlugin> plugin, LoggerUtil logger) {
         this.moduleLogger = logger;
+        this.plugin = (JavaPlugin) plugin;
         Path directory = plugin.getDirectory().resolve("modules").resolve("BetonQuestPixelmonIntegration");
         if (!directory.toFile().exists()) {
             boolean success = directory.toFile().mkdir();
@@ -55,21 +59,25 @@ public class BetonQuestObjectiveFactoryImpl extends BetonQuestPixelmonIntegratio
             register(objective, objectives.get(objective));
         }
 
+        logger.info("registered " + objectives.size() + " objectives!");
         logger.info("BetonQuestPixelmonIntegration module initialized!");
     }
 
     public void register(String objective, Class<? extends Objective> clazz) {
         try {
-            moduleLogger.info("Registering objective: " + objective + "...");
             BetonQuest.getInstance().registerObjectives(objective, clazz);
-            moduleLogger.info("Objective: " + objective + " registered!");
         } catch (Exception e) {
             moduleLogger.error("Error registering objective: " + objective + "!");
         }
     }
 
     @Override
-    public BetonQuestPixelmonIntegrationFactory getInstance() {
-        return this;
+    public CommandManager getCommandManager() {
+        return null;
+    }
+
+    @Override
+    public void unload() {
+
     }
 }

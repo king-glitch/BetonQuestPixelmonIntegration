@@ -48,12 +48,13 @@ minecraft {
 }
 
 dependencies {
-    compileOnly('org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT')
+    compileOnly('org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT')
     compileOnly('org.bstats:bstats-bukkit:3.0.2')
     compileOnly("pl.betoncraft:betonquest:1.12.0")
-    compileOnly name: "Pixelmon-1.16.5-9.1.7-server"
     compileOnly 'org.spongepowered:configurate-yaml:4.1.2'
     compileOnly project('api')
+    compileOnly name: "spigot-1.16.5"
+    compileOnly name: "Pixelmon-1.16.5-9.1.7-server"
 
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
 
@@ -71,6 +72,6 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
-build {
-    dependsOn(clean)
-}
+//build {
+//    dependsOn(clean)
+//}

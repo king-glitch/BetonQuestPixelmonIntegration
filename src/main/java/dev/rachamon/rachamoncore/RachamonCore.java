@@ -1,6 +1,7 @@
 package dev.rachamon.rachamoncore;
 
 import dev.rachamon.rachamoncore.api.IModuleFactory;
+import dev.rachamon.rachamoncore.api.commands.CommandManager;
 import dev.rachamon.rachamoncore.api.factory.ConfigFactory;
 import dev.rachamon.rachamoncore.api.factory.modules.BetonQuestPixelmonIntegrationFactory;
 import dev.rachamon.rachamoncore.api.factory.modules.PaletteTokensFactory;
@@ -10,9 +11,9 @@ import dev.rachamon.rachamoncore.config.LanguageConfig;
 import dev.rachamon.rachamoncore.config.MainConfig;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -22,17 +23,18 @@ public class RachamonCore extends JavaPlugin implements IModuleFactory<RachamonC
     public LoggerUtil moduleLogger;
     public MainConfig pluginConfig;
     public LanguageConfig pluginLanguage;
+    public final JavaPlugin plugin = this;
 
-    public RachamonCore() {
+    @Override
+    public void onLoad() {
         instance = this;
+        moduleLogger = new LoggerUtil(Bukkit.getServer(), "RachamonCore");
+        moduleLogger.setDebug(true);
+        moduleLogger.info("Loading plugin...");
     }
 
     @Override
     public void onEnable() {
-        Server server = Bukkit.getServer();
-        moduleLogger = new LoggerUtil(server, "RachamonCore");
-        moduleLogger.setDebug(true);
-        moduleLogger.info("Starting plugin...");
 
         if (!this.getDataFolder().exists()) {
             boolean success = this.getDataFolder().mkdir();
@@ -45,7 +47,7 @@ public class RachamonCore extends JavaPlugin implements IModuleFactory<RachamonC
             moduleLogger.info("Plugin directory created!");
 
             // create modules directory
-            boolean successModules = new java.io.File(this.getDataFolder(), "modules").mkdir();
+            boolean successModules = new File(this.getDataFolder(), "modules").mkdir();
             if (!successModules) {
                 moduleLogger.error("Failed to create plugin modules directory!");
                 this.getPluginLoader().disablePlugin(this);
@@ -84,7 +86,7 @@ public class RachamonCore extends JavaPlugin implements IModuleFactory<RachamonC
 
     @Override
     public void onDisable() {
-        moduleLogger.info("Stopping plugin...");
+        this.unload();
     }
 
 
@@ -94,7 +96,14 @@ public class RachamonCore extends JavaPlugin implements IModuleFactory<RachamonC
     }
 
     @Override
-    public RachamonCore getInstance() {
-        return instance;
+    public CommandManager getCommandManager() {
+        return null;
     }
+
+    @Override
+    public void unload() {
+        this.getModuleLogger().info("Unloading RachamonCore module...");
+        this.getModuleLogger().info("Unloaded RachamonCore module!");
+    }
+
 }
