@@ -111,4 +111,9 @@ jar {
     enabled = false //Disable default jar, only shadow jar will be created
     dependsOn(buildAndMoveJars)
     dependsOn(shadowJar { classifier = null })
+    doLast {
+        fileTree(dir: 'libs', include: '**/*-COMPAT.jar').each { file ->
+            file.delete()
+        }
+    }
 }

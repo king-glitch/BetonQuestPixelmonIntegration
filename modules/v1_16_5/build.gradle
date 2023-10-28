@@ -15,8 +15,8 @@ apply plugin: 'net.minecraftforge.gradle'
 group 'dev.rachamon'
 version 'COMPAT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
 
 compileJava.options.encoding = 'UTF-8'
 
@@ -72,6 +72,8 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
-//build {
-//    dependsOn(clean)
-//}
+build {
+    doFirst {
+        tasks.clean.delete()
+    }
+}

@@ -9,32 +9,32 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import java.util.List;
 
 public class SpecUtil {
-    public static boolean match(PixelmonEntity pixelmon, List<PokemonSpecification> requirementSpecs) {
-        for (PokemonSpecification requirementSpec : requirementSpecs) {
-            if (requirementSpec != null && !requirementSpec.matches(pixelmon)) {
-                return false;
-            }
-        }
+	public static boolean match(PixelmonEntity pixelmon, List<PokemonSpecification> requirementSpecs) {
+		for (PokemonSpecification requirementSpec : requirementSpecs) {
+			if (requirementSpec != null && !requirementSpec.matches(pixelmon)) {
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    public static boolean match(Pokemon pokemon, List<PokemonSpecification> requirementSpecs) {
-        for (PokemonSpecification requirementSpec : requirementSpecs) {
-            if (requirementSpec != null && !requirementSpec.matches(pokemon)) {
-                return false;
-            }
-        }
+	public static boolean match(Pokemon pokemon, List<PokemonSpecification> requirementSpecs) {
+		for (PokemonSpecification requirementSpec : requirementSpecs) {
+			if (requirementSpec != null && !requirementSpec.matches(pokemon)) {
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    public static List<PokemonSpecification> parseSpecs(String[] specs) {
-        List<PokemonSpecification> requirementSpecs = Lists.newArrayList();
-        for (String spec : specs) {
-            requirementSpecs.add(PokemonSpecificationProxy.create(spec));
-        }
+	public static List<PokemonSpecification> parseSpecs(String[] specs) {
+		List<PokemonSpecification> requirementSpecs = Lists.newArrayList();
+		for (String spec : specs) {
+			requirementSpecs.add(PokemonSpecificationProxy.create(spec));
+		}
 
-        return requirementSpecs;
-    }
+		return requirementSpecs;
+	}
 }

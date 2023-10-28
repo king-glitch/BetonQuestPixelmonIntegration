@@ -25,149 +25,171 @@ import java.util.stream.Collectors;
 
 public class PaletteTokensGiveCommand extends AbstractCommand {
 
-    private final PaletteTokensFactoryImpl module;
+	private final PaletteTokensFactoryImpl module;
 
-    public PaletteTokensGiveCommand(PaletteTokensFactoryImpl plugin) {
-        super(CommandType.BOTH, false, "give");
-        this.module = plugin;
-    }
+	public PaletteTokensGiveCommand(PaletteTokensFactoryImpl plugin) {
+		super(CommandType.BOTH, false, "give");
+		this.module = plugin;
+	}
 
-    @Override
-    protected ReturnType execute(CommandSender sender, String... args) {
-        if (args.length < 2) {
-            return ReturnType.SYNTAX_ERROR;
-        } else if (args.length < 3) {
-            args = new String[]{args[0], args[1], "1"};
-        } else if (args.length < 4 && !(sender instanceof Player)) {
-            return ReturnType.NEEDS_PLAYER;
-        }
+	@Override
+	protected ReturnType execute(CommandSender sender, String... args) {
+		if (args.length < 2) {
+			return ReturnType.SYNTAX_ERROR;
+		} else if (args.length < 3) {
+			args = new String[]{args[0], args[1], "1"};
+		} else if (args.length < 4 && !(sender instanceof Player)) {
+			return ReturnType.NEEDS_PLAYER;
+		}
 
-        if (!PixelmonCommandUtils.tabCompletePokemon().contains(args[0])) {
-            return ReturnType.SYNTAX_ERROR;
-        }
+		if (!PixelmonCommandUtils.tabCompletePokemon().contains(args[0])) {
+			return ReturnType.SYNTAX_ERROR;
+		}
 
-        // validate args 3 if it's a number
-        if (!args[2].matches("\\d+")) {
-            return ReturnType.SYNTAX_ERROR;
-        }
+		// validate args 3 if it's a number
+		if (!args[2].matches("\\d+")) {
+			return ReturnType.SYNTAX_ERROR;
+		}
 
-        String pokemon = args[0];
-        String palette = args[1];
-        int amount = Integer.parseInt(args[2]);
+		String pokemon = args[0];
+		String palette = args[1];
+		int amount = Integer.parseInt(args[2]);
 
-        Player target = args.length == 4 ? module.getPlugin().getServer().getPlayer(args[3]) : (Player) sender;
+		Player target = args.length == 4 ? module.getPlugin().getServer().getPlayer(args[3]) : (Player) sender;
 
-        if (target == null) {
+		if (target == null) {
 
-            if (sender != null) {
-                sender.sendMessage(this.module.getLocale().from(s -> s.getGeneralConfig().getPlayerIsNotOnlineNorInvalid()).process("player", args[3]).get());
-            }
+			if (sender != null) {
+				sender.sendMessage(this.module.getLocale()
+						.from(s -> s.getGeneralConfig().getPlayerIsNotOnlineNorInvalid())
+						.process("player", args[3])
+						.get());
+			}
 
-            return ReturnType.FAILURE;
-        }
+			return ReturnType.FAILURE;
+		}
 
-        if (amount < 1) {
-            return ReturnType.FAILURE;
-        }
+		if (amount < 1) {
+			return ReturnType.FAILURE;
+		}
 
-        String itemName = module.getConfig().getTokenTemplate().getPokemon().replaceAll("&([0-9a-fA-Fk-oK-OrR])", "§$1");;
-        String[] itemLore = module.getConfig().getTokenTemplate().getPalette();
+		String itemName = module.getConfig()
+				.getTokenTemplate()
+				.getPokemon()
+				.replaceAll("&([0-9a-fA-Fk-oK-OrR])", "§$1");
+		;
+		String[] itemLore = module.getConfig().getTokenTemplate().getPalette();
 
-        itemName = itemName.replace("{pokemon}", pokemon);
-        for (int i = 0; i < itemLore.length; i++) {
-            itemLore[i] = itemLore[i].replace("{pokemon}", pokemon);
-            itemLore[i] = itemLore[i].replace("{palette}", palette);
-            itemLore[i] = itemLore[i].replaceAll("&([0-9a-fA-Fk-oK-OrR])", "§$1");
-        }
+		itemName = itemName.replace("{pokemon}", pokemon);
+		for (int i = 0; i < itemLore.length; i++) {
+			itemLore[i] = itemLore[i].replace("{pokemon}", pokemon);
+			itemLore[i] = itemLore[i].replace("{palette}", palette);
+			itemLore[i] = itemLore[i].replaceAll("&([0-9a-fA-Fk-oK-OrR])", "§$1");
+		}
 
-        Material material = Material.getMaterial(module.getConfig().getTokenTemplate().getMaterial());
+		Material material = Material.getMaterial(module.getConfig().getTokenTemplate().getMaterial());
 
-        if (material == null) {
-            material = Material.PAPER;
-            module.getModuleLogger().error("Invalid material in config, defaulting to PAPER");
-        }
+		if (material == null) {
+			material = Material.PAPER;
+			module.getModuleLogger().error("Invalid material in config, defaulting to PAPER");
+		}
 
-        ItemStack item = new ItemStack(material, amount);
+		ItemStack item = new ItemStack(material, amount);
 
-        NBTTagCompound nbt = new NBTTagCompound();
-        NBTTagCompound pokemonNBT = new NBTTagCompound();
-        pokemonNBT.setString("pokemon", pokemon);
-        pokemonNBT.setString("palette", palette);
-        nbt.set("rachamon-palette-token", pokemonNBT);
+		NBTTagCompound nbt = new NBTTagCompound();
+		NBTTagCompound pokemonNBT = new NBTTagCompound();
+		pokemonNBT.setString("pokemon", pokemon);
+		pokemonNBT.setString("palette", palette);
+		nbt.set("rachamon-palette-token", pokemonNBT);
 
-        net.minecraft.server.v1_16_R3.ItemStack nmsItem = org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack.asNMSCopy(item);
-        nmsItem.setTag(nbt);
+		net.minecraft.server.v1_16_R3.ItemStack nmsItem = org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack.asNMSCopy(
+				item);
+		nmsItem.setTag(nbt);
 
-        item = CraftItemStack.asBukkitCopy(nmsItem);
+		item = CraftItemStack.asBukkitCopy(nmsItem);
 
-        ItemMeta meta = item.getItemMeta();
+		ItemMeta meta = item.getItemMeta();
 
-        if (meta == null) {
-            return ReturnType.FAILURE;
-        }
+		if (meta == null) {
+			return ReturnType.FAILURE;
+		}
 
-        meta.setDisplayName(itemName);
-        meta.setLore(Arrays.asList(itemLore));
-        meta.setCustomModelData(module.getConfig().getTokenTemplate().getCustomModelData());
+		meta.setDisplayName(itemName);
+		meta.setLore(Arrays.asList(itemLore));
+		meta.setCustomModelData(module.getConfig().getTokenTemplate().getCustomModelData());
 
-        item.setItemMeta(meta);
+		item.setItemMeta(meta);
 
-        target.getInventory().addItem(item);
+		target.getInventory().addItem(item);
 
-        if (target != sender) {
-            this.module.getLocale().from(s -> s.getGeneralConfig().getSuccessfullySendTokenToPlayer()).process("pokemon", pokemon).process("palette", palette).process("player", target.getName()).send(sender);
-        }
+		if (target != sender) {
+			this.module.getLocale()
+					.from(s -> s.getGeneralConfig().getSuccessfullySendTokenToPlayer())
+					.process("pokemon", pokemon)
+					.process("palette", palette)
+					.process("player", target.getName())
+					.send(sender);
+		}
 
-        this.module.getLocale().from(s -> s.getGeneralConfig().getSuccessfullyRetrieveToken()).process("pokemon", pokemon).process("palette", palette).send(target);
+		this.module.getLocale()
+				.from(s -> s.getGeneralConfig().getSuccessfullyRetrieveToken())
+				.process("pokemon", pokemon)
+				.process("palette", palette)
+				.send(target);
 
-        return ReturnType.SUCCESS;
-    }
+		return ReturnType.SUCCESS;
+	}
 
-    @Override
-    protected List<String> onTab(CommandSender sender, String... args) {
-        List<String> pokemon = PixelmonCommandUtils.tabCompletePokemon();
-        switch (args.length) {
-            case 1:
-                return pokemon;
-            case 2:
+	@Override
+	protected List<String> onTab(CommandSender sender, String... args) {
+		List<String> pokemon = PixelmonCommandUtils.tabCompletePokemon();
+		switch (args.length) {
+			case 1:
+				return pokemon;
+			case 2:
 
-                if (!pokemon.contains(args[0])) {
-                    return null;
-                }
+				if (!pokemon.contains(args[0])) {
+					return null;
+				}
 
-                PokemonSpecification spec = PokemonSpecificationProxy.create(args[0]);
-                Pokemon poke = spec.create();
-                List<String> palettes = new ArrayList<>();
-                for (Stats stats : poke.getSpecies().getForms()) {
-                    for (GenderProperties gender : stats.getGenderProperties()) {
-                        for (PaletteProperties palette : gender.getPalettes()) {
-                            palettes.add(palette.getName());
-                        }
-                    }
-                }
+				PokemonSpecification spec = PokemonSpecificationProxy.create(args[0]);
+				Pokemon poke = spec.create();
+				List<String> palettes = new ArrayList<>();
+				for (Stats stats : poke.getSpecies().getForms()) {
+					for (GenderProperties gender : stats.getGenderProperties()) {
+						for (PaletteProperties palette : gender.getPalettes()) {
+							palettes.add(palette.getName());
+						}
+					}
+				}
 
-                return palettes;
-            case 3:
-                return Collections.singletonList("<amount>");
-            case 4:
-                return module.getPlugin().getServer().getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
-            default:
-                return null;
-        }
-    }
+				return palettes;
+			case 3:
+				return Collections.singletonList("<amount>");
+			case 4:
+				return module.getPlugin()
+						.getServer()
+						.getOnlinePlayers()
+						.stream()
+						.map(Player::getName)
+						.collect(Collectors.toList());
+			default:
+				return null;
+		}
+	}
 
-    @Override
-    public String getPermissionNode() {
-        return "rachamoncore.module.palettetokens.command.give";
-    }
+	@Override
+	public String getPermissionNode() {
+		return "rachamoncore.module.palettetokens.command.give";
+	}
 
-    @Override
-    public String getSyntax() {
-        return "palettetokens give <pokemon> <palette> <amount> [player]";
-    }
+	@Override
+	public String getSyntax() {
+		return "palettetokens give <pokemon> <palette> <amount> [player]";
+	}
 
-    @Override
-    public String getDescription() {
-        return "Gives a palette token to a player";
-    }
+	@Override
+	public String getDescription() {
+		return "Gives a palette token to a player";
+	}
 }

@@ -62,7 +62,7 @@ public class OnKnockoutPlayerPokemon extends Objective {
         }
     }
 
-    @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onKnockout(PixelmonKnockoutEvent event) {
         if (event.isCanceled()) {
             return;

@@ -14,87 +14,88 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 public class OnTrainerLose extends Objective {
-    protected String trainer = "*";
-    protected int amount = 1;
-    protected Consumer<LostToTrainerEvent> listener = this::onLose;
+	protected String trainer = "*";
+	protected int amount = 1;
+	protected Consumer<LostToTrainerEvent> listener = this::onLose;
 
 
-    public OnTrainerLose(Instruction instruction) throws InstructionParseException {
-        super(instruction);
+	public OnTrainerLose(Instruction instruction) throws InstructionParseException {
+		super(instruction);
 
-        template = OnTrainerWin.Data.class;
-        trainer = instruction.getOptional("trainer");
-        amount = instruction.getPositive();
+		template = OnTrainerWin.Data.class;
+		trainer = instruction.getOptional("trainer");
+		amount = instruction.getPositive();
 
-        if (trainer == null) {
-            trainer = "*";
-        }
-    }
+		if (trainer == null) {
+			trainer = "*";
+		}
+	}
 
-    @Override
-    public void start() {
-        Pixelmon.EVENT_BUS.addListener(listener);
-    }
+	@Override
+	public void start() {
+		Pixelmon.EVENT_BUS.addListener(listener);
+	}
 
-    @Override
-    public void stop() {
-        Pixelmon.EVENT_BUS.unregister(listener);
-    }
+	@Override
+	public void stop() {
+		Pixelmon.EVENT_BUS.unregister(listener);
+	}
 
-    @Override
-    public String getDefaultDataInstruction() {
-        return Integer.toString(amount);
-    }
+	@Override
+	public String getDefaultDataInstruction() {
+		return Integer.toString(amount);
+	}
 
-    @Override
-    public String getProperty(String name, String playerID) {
-        switch (name.toLowerCase(Locale.ROOT)) {
-            case "left":
-                return Integer.toString(((OnTrainerWin.Data) dataMap.get(playerID)).getAmount());
-            case "amount":
-                return Integer.toString(amount);
-            default:
-                return "";
-        }
-    }
+	@Override
+	public String getProperty(String name, String playerID) {
+		switch (name.toLowerCase(Locale.ROOT)) {
+			case "left":
+				return Integer.toString(((OnTrainerWin.Data) dataMap.get(playerID)).getAmount());
+			case "amount":
+				return Integer.toString(amount);
+			default:
+				return "";
+		}
+	}
 
-    @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onLose(LostToTrainerEvent event) {
-        if (event.isCanceled()) {
-            return;
-        }
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void onLose(LostToTrainerEvent event) {
+		if (event.isCanceled()) {
+			return;
+		}
 
-        ServerPlayerEntity player = event.player;
-        if (player == null) {
-            return;
-        }
+		ServerPlayerEntity player = event.player;
+		if (player == null) {
+			return;
+		}
 
-        if (!containsPlayer(player.getStringUUID())) {
-            return;
-        }
+		if (!containsPlayer(player.getStringUUID())) {
+			return;
+		}
 
-        if (!checkConditions(player.getStringUUID())) {
-            return;
-        }
-
-
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.trainer.lose: " + event.trainer.getStringUUID());
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.trainer.lose: " + trainer);
+		if (!checkConditions(player.getStringUUID())) {
+			return;
+		}
 
 
-        if (!trainer.equals("*") && !trainer.equals(event.trainer.getStringUUID())) {
-            return;
-        }
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.trainer.lose: " + event.trainer.getStringUUID());
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.trainer.lose: " + trainer);
 
-        OnTrainerWin.Data data = (OnTrainerWin.Data) dataMap.get(player.getStringUUID());
 
-        data.subtract();
+		if (!trainer.equals("*") && !trainer.equals(event.trainer.getStringUUID())) {
+			return;
+		}
 
-        if (!data.isZero()) {
-            return;
-        }
+		OnTrainerWin.Data data = (OnTrainerWin.Data) dataMap.get(player.getStringUUID());
 
-        completeObjective(player.getStringUUID());
+		data.subtract();
 
-    }
+		if (!data.isZero()) {
+			return;
+		}
+
+		completeObjective(player.getStringUUID());
+
+	}
 }

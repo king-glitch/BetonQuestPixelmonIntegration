@@ -15,76 +15,78 @@ import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 import java.util.function.Consumer;
 
 public class OnPokemonEvolvePost extends Objective {
-    protected String[] specs;
-    protected int amount = 1;
-    protected Consumer<EvolveEvent.Post> listener = this::onEvolve;
+	protected String[] specs;
+	protected int amount = 1;
+	protected Consumer<EvolveEvent.Post> listener = this::onEvolve;
 
-    public OnPokemonEvolvePost(Instruction instruction) throws InstructionParseException {
-        super(instruction);
+	public OnPokemonEvolvePost(Instruction instruction) throws InstructionParseException {
+		super(instruction);
 
-        template = OnPokemonEvolvePre.Data.class;
-        specs = instruction.getArray();
-        amount = instruction.getPositive();
-    }
+		template = OnPokemonEvolvePre.Data.class;
+		specs = instruction.getArray();
+		amount = instruction.getPositive();
+	}
 
-    @Override
-    public void start() {
-        Pixelmon.EVENT_BUS.addListener(listener);
-    }
+	@Override
+	public void start() {
+		Pixelmon.EVENT_BUS.addListener(listener);
+	}
 
-    @Override
-    public void stop() {
-        Pixelmon.EVENT_BUS.unregister(listener);
-    }
+	@Override
+	public void stop() {
+		Pixelmon.EVENT_BUS.unregister(listener);
+	}
 
-    @Override
-    public String getDefaultDataInstruction() {
-        return Integer.toString(amount);
-    }
+	@Override
+	public String getDefaultDataInstruction() {
+		return Integer.toString(amount);
+	}
 
-    @Override
-    public String getProperty(String name, String playerID) {
-        return OnKnockoutPlayerPokemon.getString(name, (OnKnockout.Data) dataMap.get(playerID), amount, playerID);
-    }
+	@Override
+	public String getProperty(String name, String playerID) {
+		return OnKnockoutPlayerPokemon.getString(name, (OnKnockout.Data) dataMap.get(playerID), amount, playerID);
+	}
 
-    @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onEvolve(EvolveEvent.Post event) {
-        if (event.isCanceled()) {
-            return;
-        }
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void onEvolve(EvolveEvent.Post event) {
+		if (event.isCanceled()) {
+			return;
+		}
 
-        ServerPlayerEntity player = event.getPlayer();
-        PixelmonEntity pixelmon = event.getEntity();
-        if (player == null || pixelmon == null) {
-            return;
-        }
+		ServerPlayerEntity player = event.getPlayer();
+		PixelmonEntity pixelmon = event.getEntity();
+		if (player == null || pixelmon == null) {
+			return;
+		}
 
-        if (!containsPlayer(player.getStringUUID())) {
-            return;
-        }
+		if (!containsPlayer(player.getStringUUID())) {
+			return;
+		}
 
-        if (!checkConditions(player.getStringUUID())) {
-            return;
-        }
-
-
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.evolve.post: " + event.getPokemon().getDisplayName());
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.evolve.post: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
+		if (!checkConditions(player.getStringUUID())) {
+			return;
+		}
 
 
-        OnPokemonEvolvePre.Data data = (OnPokemonEvolvePre.Data) dataMap.get(player.getStringUUID());
-        // check if match the Pokémon specs
-        if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
-            return;
-        }
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.evolve.post: " + event.getPokemon().getDisplayName());
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.evolve.post: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
 
-        data.subtract();
 
-        if (!data.isZero()) {
-            return;
-        }
+		OnPokemonEvolvePre.Data data = (OnPokemonEvolvePre.Data) dataMap.get(player.getStringUUID());
+		// check if match the Pokémon specs
+		if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
+			return;
+		}
 
-        completeObjective(player.getStringUUID());
+		data.subtract();
 
-    }
+		if (!data.isZero()) {
+			return;
+		}
+
+		completeObjective(player.getStringUUID());
+
+	}
 }

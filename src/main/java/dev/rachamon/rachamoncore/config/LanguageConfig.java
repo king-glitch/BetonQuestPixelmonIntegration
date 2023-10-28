@@ -9,17 +9,17 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 @ConfigSerializable
 public class LanguageConfig {
 
-    @Comment("General Settings")
-    @Setting("general")
-    private final GeneralConfig generalConfig = new GeneralConfig();
+	@Comment("General Settings")
+	@Setting("general")
+	private final GeneralConfig generalConfig = new GeneralConfig();
 
 
-    @Getter
-    @ConfigSerializable
-    public static class GeneralConfig {
-        @Comment("Prefix for chat message")
-        @Setting("prefix")
-        protected String prefix = "&8[&c&lRachamonCore&8]&7 ";
-    }
+	@Getter
+	@ConfigSerializable
+	public static class GeneralConfig {
+		@Comment("Prefix for chat message")
+		@Setting("prefix")
+		protected String prefix = "&8[&c&lRachamonCore&8]&7 ";
+	}
 }
 

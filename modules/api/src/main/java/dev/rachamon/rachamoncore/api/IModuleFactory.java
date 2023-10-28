@@ -7,13 +7,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.nio.file.Path;
 
 public interface IModuleFactory<T> {
-    LoggerUtil getModuleLogger();
+	LoggerUtil getModuleLogger();
 
-    Path getDirectory();
+	Path getDirectory();
 
-    JavaPlugin getPlugin();
+	JavaPlugin getPlugin();
 
-    CommandManager getCommandManager();
+	CommandManager getCommandManager();
 
-    void unload();
+	void unload();
 }

@@ -18,103 +18,105 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("PMD.CommentRequired")
 public class OnPokemonCatchEvent extends Objective {
-    protected String[] specs;
-    protected int amount = 1;
+	protected String[] specs;
+	protected int amount = 1;
 
-    protected Consumer<CaptureEvent.SuccessfulCapture> listener = this::onCatchListener;
+	protected Consumer<CaptureEvent.SuccessfulCapture> listener = this::onCatchListener;
 
-    public OnPokemonCatchEvent(final Instruction instruction) throws InstructionParseException {
-        super(instruction);
-        template = PokemonCatchData.class;
-        specs = instruction.getArray();
-        amount = instruction.getPositive();
-    }
+	public OnPokemonCatchEvent(final Instruction instruction) throws InstructionParseException {
+		super(instruction);
+		template = PokemonCatchData.class;
+		specs = instruction.getArray();
+		amount = instruction.getPositive();
+	}
 
-    @Override
-    public void start() {
-        Pixelmon.EVENT_BUS.addListener(listener);
-    }
+	@Override
+	public void start() {
+		Pixelmon.EVENT_BUS.addListener(listener);
+	}
 
-    @Override
-    public void stop() {
-        Pixelmon.EVENT_BUS.unregister(listener);
-    }
+	@Override
+	public void stop() {
+		Pixelmon.EVENT_BUS.unregister(listener);
+	}
 
-    @Override
-    public String getDefaultDataInstruction() {
-        return Integer.toString(amount);
-    }
+	@Override
+	public String getDefaultDataInstruction() {
+		return Integer.toString(amount);
+	}
 
-    @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onCatchListener(CaptureEvent.SuccessfulCapture event) {
-        if (event.isCanceled()) {
-            return;
-        }
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void onCatchListener(CaptureEvent.SuccessfulCapture event) {
+		if (event.isCanceled()) {
+			return;
+		}
 
-        PixelmonEntity pixelmon = event.getPokemon();
-        ServerPlayerEntity player = event.getPlayer();
+		PixelmonEntity pixelmon = event.getPokemon();
+		ServerPlayerEntity player = event.getPlayer();
 
-        if (!containsPlayer(player.getStringUUID())) {
-            return;
-        }
+		if (!containsPlayer(player.getStringUUID())) {
+			return;
+		}
 
-        if (!checkConditions(player.getStringUUID())) {
-            return;
-        }
-
-
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.catch: " + event.getPokemon().getPokemonName());
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.catch: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
+		if (!checkConditions(player.getStringUUID())) {
+			return;
+		}
 
 
-        PokemonCatchData data = (PokemonCatchData) dataMap.get(player.getStringUUID());
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.catch: " + event.getPokemon().getPokemonName());
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.catch: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
 
-        // check if match the Pokémon specs
-        if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
-            return;
-        }
 
-        data.subtract();
-        if (!data.isZero()) {
-            return;
-        }
+		PokemonCatchData data = (PokemonCatchData) dataMap.get(player.getStringUUID());
 
-        completeObjective(player.getStringUUID());
-    }
+		// check if match the Pokémon specs
+		if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
+			return;
+		}
 
-    @Override
-    public String getProperty(String name, String playerID) {
-        switch (name.toLowerCase(Locale.ROOT)) {
-            case "left":
-                return Integer.toString(((PokemonCatchData) dataMap.get(playerID)).getAmount());
-            case "amount":
-                return Integer.toString(amount);
-            default:
-                return "";
-        }
-    }
+		data.subtract();
+		if (!data.isZero()) {
+			return;
+		}
 
-    @Getter
-    public static class PokemonCatchData extends ObjectiveData {
-        public int amount;
+		completeObjective(player.getStringUUID());
+	}
 
-        public PokemonCatchData(final String instruction, final String playerID, final String objID) {
-            super(instruction, playerID, objID);
-            amount = Integer.parseInt(instruction);
-        }
+	@Override
+	public String getProperty(String name, String playerID) {
+		switch (name.toLowerCase(Locale.ROOT)) {
+			case "left":
+				return Integer.toString(((PokemonCatchData) dataMap.get(playerID)).getAmount());
+			case "amount":
+				return Integer.toString(amount);
+			default:
+				return "";
+		}
+	}
 
-        public void subtract() {
-            amount--;
-            update();
-        }
+	@Getter
+	public static class PokemonCatchData extends ObjectiveData {
+		public int amount;
 
-        public boolean isZero() {
-            return amount <= 0;
-        }
+		public PokemonCatchData(final String instruction, final String playerID, final String objID) {
+			super(instruction, playerID, objID);
+			amount = Integer.parseInt(instruction);
+		}
 
-        @Override
-        public String toString() {
-            return Integer.toString(amount);
-        }
-    }
+		public void subtract() {
+			amount--;
+			update();
+		}
+
+		public boolean isZero() {
+			return amount <= 0;
+		}
+
+		@Override
+		public String toString() {
+			return Integer.toString(amount);
+		}
+	}
 }

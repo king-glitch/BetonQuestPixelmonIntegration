@@ -15,69 +15,72 @@ import java.util.HashMap;
 
 @Getter
 public class BetonQuestObjectiveFactoryImpl extends BetonQuestPixelmonIntegrationFactory {
-    private final LoggerUtil moduleLogger;
-    private Path directory;
-    @Getter
-    public static BetonQuestObjectiveFactoryImpl instance;
-    private final JavaPlugin plugin;
+	private final LoggerUtil moduleLogger;
+	private Path directory;
+	@Getter
+	public static BetonQuestObjectiveFactoryImpl instance;
+	private final JavaPlugin plugin;
 
-    public BetonQuestObjectiveFactoryImpl(IModuleFactory<? extends JavaPlugin> plugin, LoggerUtil logger) {
-        this.moduleLogger = logger;
-        this.plugin = (JavaPlugin) plugin;
-        Path directory = plugin.getDirectory().resolve("modules").resolve("BetonQuestPixelmonIntegration");
-        if (!directory.toFile().exists()) {
-            boolean success = directory.toFile().mkdir();
-            if (!success) {
-                logger.error("Error creating directory: " + directory);
-                return;
-            }
+	public BetonQuestObjectiveFactoryImpl(IModuleFactory<? extends JavaPlugin> module) {
+		this.moduleLogger = new LoggerUtil(module.getPlugin().getServer(), "BetonQuestPixelmonIntegration");
 
-            logger.info("Created directory: " + directory);
-        }
+		this.plugin = (JavaPlugin) module;
+		BetonQuestObjectiveFactoryImpl.instance = this;
 
-        this.directory = directory;
+		Path directory = module.getDirectory().resolve("modules").resolve("BetonQuestPixelmonIntegration");
+		if (!directory.toFile().exists()) {
+			boolean success = directory.toFile().mkdir();
+			if (!success) {
+				moduleLogger.error("Error creating directory: " + directory);
+				return;
+			}
 
-        logger.info("Initializing BetonQuestPixelmonIntegration module...");
-        HashMap<String, Class<? extends Objective>> objectives = new HashMap<String, Class<? extends Objective>>() {{
-            put("pixelmon.apricorn.harvest", OnApricornHarvest.class);
-            put("pixelmon.defeated", OnDefeated.class);
-            put("pixelmon.hatch", OnHatchPokemonEgg.class);
-            put("pixelmon.knockout", OnKnockout.class);
-            put("pixelmon.knockout.wild", OnKnockoutWildPokemon.class);
-            put("pixelmon.knockout.trainer", OnKnockoutTrainerPokemon.class);
-            put("pixelmon.knockout.player", OnKnockoutPlayerPokemon.class);
-            put("pixelmon.catch", OnPokemonCatchEvent.class);
-            put("pixelmon.evolve.pre", OnPokemonEvolvePre.class);
-            put("pixelmon.evolve.post", OnPokemonEvolvePost.class);
-            put("pixelmon.trade.get", OnPokemonTradeGet.class);
-            put("pixelmon.trade.give", OnPokemonTradeGive.class);
-            put("pixelmon.trainer.win", OnTrainerWin.class);
-            put("pixelmon.trainer.lose", OnTrainerLose.class);
-        }};
+			moduleLogger.info("Created directory: " + directory);
+		}
 
-        for (String objective : objectives.keySet()) {
-            register(objective, objectives.get(objective));
-        }
+		this.directory = directory;
 
-        logger.info("registered " + objectives.size() + " objectives!");
-        logger.info("BetonQuestPixelmonIntegration module initialized!");
-    }
+		moduleLogger.info("Initializing BetonQuestPixelmonIntegration module...");
+		HashMap<String, Class<? extends Objective>> objectives = new HashMap<String, Class<? extends Objective>>() {{
+			put("pixelmon.apricorn.harvest", OnApricornHarvest.class);
+			put("pixelmon.defeated", OnDefeated.class);
+			put("pixelmon.hatch", OnHatchPokemonEgg.class);
+			put("pixelmon.knockout", OnKnockout.class);
+			put("pixelmon.knockout.wild", OnKnockoutWildPokemon.class);
+			put("pixelmon.knockout.trainer", OnKnockoutTrainerPokemon.class);
+			put("pixelmon.knockout.player", OnKnockoutPlayerPokemon.class);
+			put("pixelmon.catch", OnPokemonCatchEvent.class);
+			put("pixelmon.evolve.pre", OnPokemonEvolvePre.class);
+			put("pixelmon.evolve.post", OnPokemonEvolvePost.class);
+			put("pixelmon.trade.get", OnPokemonTradeGet.class);
+			put("pixelmon.trade.give", OnPokemonTradeGive.class);
+			put("pixelmon.trainer.win", OnTrainerWin.class);
+			put("pixelmon.trainer.lose", OnTrainerLose.class);
+		}};
 
-    public void register(String objective, Class<? extends Objective> clazz) {
-        try {
-            BetonQuest.getInstance().registerObjectives(objective, clazz);
-        } catch (Exception e) {
-            moduleLogger.error("Error registering objective: " + objective + "!");
-        }
-    }
+		for (String objective : objectives.keySet()) {
+			register(objective, objectives.get(objective));
+		}
 
-    @Override
-    public CommandManager getCommandManager() {
-        return null;
-    }
+		moduleLogger.info("registered " + objectives.size() + " objectives!");
+		moduleLogger.info("BetonQuestPixelmonIntegration module initialized!");
+	}
 
-    @Override
-    public void unload() {
+	public void register(String objective, Class<? extends Objective> clazz) {
+		try {
+			BetonQuest.getInstance().registerObjectives(objective, clazz);
+		} catch (Exception e) {
+			moduleLogger.error("Error registering objective: " + objective + "!");
+		}
+	}
 
-    }
+	@Override
+	public CommandManager getCommandManager() {
+		return null;
+	}
+
+	@Override
+	public void unload() {
+
+	}
 }

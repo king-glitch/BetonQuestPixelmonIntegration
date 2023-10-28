@@ -24,9 +24,16 @@ public class PixelmonBoosterPlayerData {
         public void setTimeLeft(int timeLeft) {
             this.timeLeft = timeLeft;
         }
-
         public void setActivated(boolean activated) {
             this.activated = activated;
         }
+    }
+
+    public void update(String uuid, String boosterType, BoosterData boosterData) {
+        if (!data.containsKey(uuid)) {
+            data.put(uuid, new HashMap<>());
+        }
+
+        data.get(uuid).put(boosterType, boosterData);
     }
 }

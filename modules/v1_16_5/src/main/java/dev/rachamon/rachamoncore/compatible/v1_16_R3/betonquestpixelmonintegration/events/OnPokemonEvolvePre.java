@@ -16,101 +16,103 @@ import pl.betoncraft.betonquest.exceptions.InstructionParseException;
 import java.util.function.Consumer;
 
 public class OnPokemonEvolvePre extends Objective {
-    protected String[] specs;
-    protected int amount = 1;
-    protected Consumer<EvolveEvent.Pre> listener = this::onEvolve;
+	protected String[] specs;
+	protected int amount = 1;
+	protected Consumer<EvolveEvent.Pre> listener = this::onEvolve;
 
 
-    public OnPokemonEvolvePre(Instruction instruction) throws InstructionParseException {
-        super(instruction);
+	public OnPokemonEvolvePre(Instruction instruction) throws InstructionParseException {
+		super(instruction);
 
-        template = Data.class;
-        specs = instruction.getArray();
-        amount = instruction.getPositive();
-    }
+		template = Data.class;
+		specs = instruction.getArray();
+		amount = instruction.getPositive();
+	}
 
-    @Override
-    public void start() {
-        Pixelmon.EVENT_BUS.addListener(listener);
-    }
+	@Override
+	public void start() {
+		Pixelmon.EVENT_BUS.addListener(listener);
+	}
 
-    @Override
-    public void stop() {
-        Pixelmon.EVENT_BUS.unregister(listener);
-    }
+	@Override
+	public void stop() {
+		Pixelmon.EVENT_BUS.unregister(listener);
+	}
 
-    @Override
-    public String getDefaultDataInstruction() {
-        return Integer.toString(amount);
-    }
+	@Override
+	public String getDefaultDataInstruction() {
+		return Integer.toString(amount);
+	}
 
-    @Override
-    public String getProperty(String name, String playerID) {
-        return OnKnockoutPlayerPokemon.getString(name, (OnKnockout.Data) dataMap.get(playerID), amount, playerID);
-    }
+	@Override
+	public String getProperty(String name, String playerID) {
+		return OnKnockoutPlayerPokemon.getString(name, (OnKnockout.Data) dataMap.get(playerID), amount, playerID);
+	}
 
-    @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onEvolve(EvolveEvent.Pre event) {
-        if (event.isCanceled()) {
-            return;
-        }
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void onEvolve(EvolveEvent.Pre event) {
+		if (event.isCanceled()) {
+			return;
+		}
 
-        ServerPlayerEntity player = event.getPlayer();
-        PixelmonEntity pixelmon = event.getEntity();
-        if (player == null || pixelmon == null) {
-            return;
-        }
+		ServerPlayerEntity player = event.getPlayer();
+		PixelmonEntity pixelmon = event.getEntity();
+		if (player == null || pixelmon == null) {
+			return;
+		}
 
-        if (!containsPlayer(player.getStringUUID())) {
-            return;
-        }
+		if (!containsPlayer(player.getStringUUID())) {
+			return;
+		}
 
-        if (!checkConditions(player.getStringUUID())) {
-            return;
-        }
-
-
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.evolve.pre: " + event.getPokemon().getDisplayName());
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.evolve.pre: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
+		if (!checkConditions(player.getStringUUID())) {
+			return;
+		}
 
 
-        Data data = (Data) dataMap.get(player.getStringUUID());
-        // check if match the Pokémon specs
-        if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
-            return;
-        }
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.evolve.pre: " + event.getPokemon().getDisplayName());
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.evolve.pre: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
 
-        data.subtract();
 
-        if (!data.isZero()) {
-            return;
-        }
+		Data data = (Data) dataMap.get(player.getStringUUID());
+		// check if match the Pokémon specs
+		if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
+			return;
+		}
 
-        completeObjective(player.getStringUUID());
+		data.subtract();
 
-    }
+		if (!data.isZero()) {
+			return;
+		}
 
-    @Getter
-    public static class Data extends ObjectiveData {
-        public int amount;
+		completeObjective(player.getStringUUID());
 
-        public Data(final String instruction, final String playerID, final String objID) {
-            super(instruction, playerID, objID);
-            amount = Integer.parseInt(instruction);
-        }
+	}
 
-        public void subtract() {
-            amount--;
-            update();
-        }
+	@Getter
+	public static class Data extends ObjectiveData {
+		public int amount;
 
-        public boolean isZero() {
-            return amount <= 0;
-        }
+		public Data(final String instruction, final String playerID, final String objID) {
+			super(instruction, playerID, objID);
+			amount = Integer.parseInt(instruction);
+		}
 
-        @Override
-        public String toString() {
-            return Integer.toString(amount);
-        }
-    }
+		public void subtract() {
+			amount--;
+			update();
+		}
+
+		public boolean isZero() {
+			return amount <= 0;
+		}
+
+		@Override
+		public String toString() {
+			return Integer.toString(amount);
+		}
+	}
 }

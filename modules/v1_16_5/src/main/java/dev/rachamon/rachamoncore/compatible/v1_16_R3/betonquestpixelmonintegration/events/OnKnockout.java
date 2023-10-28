@@ -17,110 +17,113 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 public class OnKnockout extends Objective {
-    protected String[] specs;
-    protected int amount = 1;
-    protected Consumer<PixelmonKnockoutEvent> listener = this::onKnockout;
+	protected String[] specs;
+	protected int amount = 1;
+	protected Consumer<PixelmonKnockoutEvent> listener = this::onKnockout;
 
 
-    public OnKnockout(Instruction instruction) throws InstructionParseException {
-        super(instruction);
+	public OnKnockout(Instruction instruction) throws InstructionParseException {
+		super(instruction);
 
-        template = Data.class;
-        specs = instruction.getArray();
-        amount = instruction.getPositive();
-    }
+		template = Data.class;
+		specs = instruction.getArray();
+		amount = instruction.getPositive();
+	}
 
-    @Override
-    public void start() {
-        Pixelmon.EVENT_BUS.addListener(listener);
-    }
+	@Override
+	public void start() {
+		Pixelmon.EVENT_BUS.addListener(listener);
+	}
 
-    @Override
-    public void stop() {
-        Pixelmon.EVENT_BUS.unregister(listener);
-    }
+	@Override
+	public void stop() {
+		Pixelmon.EVENT_BUS.unregister(listener);
+	}
 
-    @Override
-    public String getDefaultDataInstruction() {
-        return Integer.toString(amount);
-    }
+	@Override
+	public String getDefaultDataInstruction() {
+		return Integer.toString(amount);
+	}
 
-    @Override
-    public String getProperty(String name, String playerID) {
-        switch (name.toLowerCase(Locale.ROOT)) {
-            case "left":
-                return Integer.toString(((Data) dataMap.get(playerID)).getAmount());
-            case "amount":
-                return Integer.toString(amount);
-            default:
-                return "";
-        }
-    }
+	@Override
+	public String getProperty(String name, String playerID) {
+		switch (name.toLowerCase(Locale.ROOT)) {
+			case "left":
+				return Integer.toString(((Data) dataMap.get(playerID)).getAmount());
+			case "amount":
+				return Integer.toString(amount);
+			default:
+				return "";
+		}
+	}
 
-    @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
-    public void onKnockout(PixelmonKnockoutEvent event) {
-        if (event.isCanceled()) {
-            return;
-        }
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void onKnockout(PixelmonKnockoutEvent event) {
+		if (event.isCanceled()) {
+			return;
+		}
 
-        ServerPlayerEntity player = event.source.getPlayerOwner();
-        PixelmonEntity pixelmon = event.pokemon.entity;
-        if (player == null || pixelmon == null) {
-            return;
-        }
-
-
-        if (!containsPlayer(player.getStringUUID())) {
-            return;
-        }
-
-        if (!checkConditions(player.getStringUUID())) {
-            return;
-        }
+		ServerPlayerEntity player = event.source.getPlayerOwner();
+		PixelmonEntity pixelmon = event.pokemon.entity;
+		if (player == null || pixelmon == null) {
+			return;
+		}
 
 
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.knockout: " + event.source.getPlayerOwner().getName());
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.knockout: " + event.pokemon.getPokemonName());
-        BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.knockout: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
+		if (!containsPlayer(player.getStringUUID())) {
+			return;
+		}
+
+		if (!checkConditions(player.getStringUUID())) {
+			return;
+		}
 
 
-        Data data = (Data) dataMap.get(player.getStringUUID());
-        // check if match the Pokémon specs
-        if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
-            return;
-        }
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.knockout: " + event.source.getPlayerOwner().getName());
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.knockout: " + event.pokemon.getPokemonName());
+		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+				.debug("pixelmon.knockout: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
 
-        data.subtract();
 
-        if (!data.isZero()) {
-            return;
-        }
+		Data data = (Data) dataMap.get(player.getStringUUID());
+		// check if match the Pokémon specs
+		if (!SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs))) {
+			return;
+		}
 
-        completeObjective(player.getStringUUID());
+		data.subtract();
 
-    }
+		if (!data.isZero()) {
+			return;
+		}
 
-    @Getter
-    public static class Data extends ObjectiveData {
-        public int amount;
+		completeObjective(player.getStringUUID());
 
-        public Data(final String instruction, final String playerID, final String objID) {
-            super(instruction, playerID, objID);
-            amount = Integer.parseInt(instruction);
-        }
+	}
 
-        public void subtract() {
-            amount--;
-            update();
-        }
+	@Getter
+	public static class Data extends ObjectiveData {
+		public int amount;
 
-        public boolean isZero() {
-            return amount <= 0;
-        }
+		public Data(final String instruction, final String playerID, final String objID) {
+			super(instruction, playerID, objID);
+			amount = Integer.parseInt(instruction);
+		}
 
-        @Override
-        public String toString() {
-            return Integer.toString(amount);
-        }
-    }
+		public void subtract() {
+			amount--;
+			update();
+		}
+
+		public boolean isZero() {
+			return amount <= 0;
+		}
+
+		@Override
+		public String toString() {
+			return Integer.toString(amount);
+		}
+	}
 }

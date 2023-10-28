@@ -3,6 +3,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterBase;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.TrainerMoneyBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -11,150 +12,252 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Getter
 public class BoosterService {
-    @Getter
-    private static Map<BoosterType, BoosterBase> boosters = new HashMap<>();
-    public final PixelmonBoosterFactoryImpl instance;
+	@Getter
+	private static Map<BoosterType, BoosterBase> boosters = new HashMap<>();
+	private final PixelmonBoosterFactoryImpl module;
 
-    public BoosterService() {
-        this.instance = (PixelmonBoosterFactoryImpl) PixelmonBoosterFactoryImpl.getInstance();
-    }
+	public BoosterService(PixelmonBoosterFactoryImpl plugin) {
+		this.module = plugin;
 
-    public boolean resume(Player player, BoosterType boosterType) throws IOException {
-        if (!boosters.containsKey(boosterType)) {
-            return false;
-        }
+		boosters.put(BoosterType.BATTLE_WINNING, new TrainerMoneyBooster(plugin));
+	}
 
-        PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType);
-        if (boosterData == null) {
-            return false;
-        }
+	public boolean resume(Player player, BoosterType boosterType) throws IOException {
+		if (!boosters.containsKey(boosterType)) {
+			return false;
+		}
 
-        if (boosterData.getTimeLeft() < 1) {
-            return false;
-        }
+		PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType);
+		if (boosterData == null) {
+			return false;
+		}
 
-        boosters.get(boosterType).add(player.getUniqueId().toString(), boosterData.getTimeLeft());
+		if (boosterData.getTimeLeft() < 1) {
+			return false;
+		}
 
-        boosterData.setActivated(true);
+		boosters.get(boosterType).add(player.getUniqueId());
 
-        instance.getPlayerDataConfig().save();
-        return true;
-    }
+		boosterData.setActivated(true);
 
-    public void pause(Player player, BoosterType boosterType) throws IOException {
-        if (!boosters.containsKey(boosterType)) {
-            return;
-        }
+		module.getPlayerData().update(player.getUniqueId().toString(), boosterType.name().toLowerCase(), boosterData);
+		module.getPlayerDataConfigNode().save();
+		return true;
+	}
 
-        PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType);
-        if (boosterData == null) {
-            return;
-        }
+	public void pause(Player player, BoosterType boosterType) throws IOException {
+		if (!boosters.containsKey(boosterType)) {
+			return;
+		}
 
-        boosterData.setActivated(false);
+		PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType);
+		if (boosterData == null) {
+			return;
+		}
 
-        instance.getPlayerDataConfig().save();
+		boosterData.setActivated(false);
 
-        boosters.get(boosterType).remove(player.getUniqueId().toString());
+		module.getPlayerData().update(player.getUniqueId().toString(), boosterType.name().toLowerCase(), boosterData);
+		module.getPlayerDataConfigNode().save();
 
-    }
+		boosters.get(boosterType).remove(player.getUniqueId());
 
-    public void add(Player player, BoosterType boosterType, int seconds) throws IOException {
-        if (!boosters.containsKey(boosterType)) {
-            return;
-        }
+	}
 
-        PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType, true);
+	public void add(Player player, BoosterType boosterType, int seconds) throws IOException {
 
-        boosterData.setTimeLeft(boosterData.getTimeLeft() + seconds);
+		if (!boosters.containsKey(boosterType)) {
+			return;
+		}
 
-        instance.getPlayerDataConfig().save();
+		PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType, true);
 
-        if (boosterData.isActivated()) {
-            boosters.get(boosterType).add(player.getUniqueId().toString(), seconds);
-            boosters.get(boosterType).start();
-        }
-    }
+		boosterData.setTimeLeft(boosterData.getTimeLeft() + seconds);
 
-    public void set(Player player, BoosterType boosterType, int seconds) throws IOException {
-        if (!boosters.containsKey(boosterType)) {
-            return;
-        }
+		this.module.getPlayerData()
+				.update(player.getUniqueId().toString(), boosterType.name().toLowerCase(), boosterData);
+		this.module.getPlayerDataConfigNode().save();
 
-        PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType, true);
+		if (boosterData.isActivated() || boosters.get(boosterType).isGlobalActivate()) {
+			boosters.get(boosterType).add(player.getUniqueId());
+		}
+	}
 
-        boosterData.setTimeLeft(seconds);
+	public void remove(Player player, BoosterType boosterType, int seconds) throws IOException {
+		if (!boosters.containsKey(boosterType)) {
+			return;
+		}
 
-        instance.getPlayerDataConfig().save();
+		PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType, true);
 
-        if (boosterData.isActivated()) {
-            boosters.get(boosterType).set(player.getUniqueId().toString(), seconds);
-            boosters.get(boosterType).start();
-        }
-    }
+		boosterData.setTimeLeft(boosterData.getTimeLeft() - seconds);
 
-    @Nullable
-    public PixelmonBoosterPlayerData.BoosterData get(Player player, BoosterType boosterType) {
-        if (!boosters.containsKey(boosterType)) {
-            return null;
-        }
+		if (boosterData.getTimeLeft() < 0) {
+			boosterData.setTimeLeft(0);
+		}
 
-        if (!instance.getPlayerData().getData().containsKey(player.getUniqueId().toString())) {
-            return null;
-        }
+		module.getPlayerData().update(player.getUniqueId().toString(), boosterType.name().toLowerCase(), boosterData);
+		module.getPlayerDataConfigNode().save();
 
-        Map<String, PixelmonBoosterPlayerData.BoosterData> data = instance.getPlayerData()
-                                                                          .getData()
-                                                                          .get(player.getUniqueId().toString());
+		if (boosterData.isActivated() && boosterData.getTimeLeft() > 0) {
+			boosters.get(boosterType).add(player.getUniqueId());
+		}
+	}
 
-        if (!data.containsKey(boosterType.name().toLowerCase())) {
-            return null;
-        }
+	public void set(Player player, BoosterType boosterType, int seconds) throws IOException {
+		if (!boosters.containsKey(boosterType)) {
+			return;
+		}
 
-        return data.get(boosterType.name().toLowerCase());
-    }
+		PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType, true);
 
-    public PixelmonBoosterPlayerData.BoosterData get(
-            Player player, BoosterType boosterType, boolean createIfNotExists
-    ) throws IOException {
-        if (!boosters.containsKey(boosterType)) {
-            return null;
-        }
+		boosterData.setTimeLeft(seconds);
 
-        if (!instance.getPlayerData().getData().containsKey(player.getUniqueId().toString())) {
-            if (!createIfNotExists) {
-                return null;
-            }
+		module.getPlayerData().update(player.getUniqueId().toString(), boosterType.name().toLowerCase(), boosterData);
+		module.getPlayerDataConfigNode().save();
 
-            instance.getPlayerData().getData().put(player.getUniqueId().toString(), new HashMap<>());
-        }
+		if (boosterData.isActivated()) {
+			boosters.get(boosterType).add(player.getUniqueId());
+		}
+	}
 
-        Map<String, PixelmonBoosterPlayerData.BoosterData> data = instance.getPlayerData()
-                                                                          .getData()
-                                                                          .get(player.getUniqueId().toString());
+	@Nullable
+	public PixelmonBoosterPlayerData.BoosterData get(Player player, BoosterType boosterType) {
+		return this.get(player.getUniqueId(), boosterType);
+	}
 
-        if (!data.containsKey(boosterType.name().toLowerCase())) {
-            if (!createIfNotExists) {
-                return null;
-            }
+	public PixelmonBoosterPlayerData.BoosterData get(UUID uuid, BoosterType boosterType) {
+		if (!boosters.containsKey(boosterType)) {
+			return null;
+		}
 
-            data.put(boosterType.name().toLowerCase(), new PixelmonBoosterPlayerData.BoosterData());
-        }
+		if (!module.getPlayerData().getData().containsKey(uuid.toString())) {
+			return null;
+		}
 
-        return data.get(boosterType.name().toLowerCase());
-    }
+		Map<String, PixelmonBoosterPlayerData.BoosterData> data = module.getPlayerData()
+				.getData()
+				.get(uuid.toString());
 
-    public void activateGlobal(BoosterType boosterType) {
-        if (!boosters.containsKey(boosterType)) {
-            return;
-        }
+		if (!data.containsKey(boosterType.name().toLowerCase())) {
+			return null;
+		}
 
-        BoosterBase boosterBase = boosters.get(boosterType);
-        boosterBase.setGlobalActivate(true);
-    }
+		return data.get(boosterType.name().toLowerCase());
+	}
 
+	public PixelmonBoosterPlayerData.BoosterData get(
+			Player player, BoosterType boosterType, boolean createIfNotExists
+	) throws IOException {
+		if (!boosters.containsKey(boosterType)) {
+			return null;
+		}
+
+		if (!module.getPlayerData().getData().containsKey(player.getUniqueId().toString())) {
+			if (!createIfNotExists) {
+				return null;
+			}
+
+			module.getPlayerData().getData().put(player.getUniqueId().toString(), new HashMap<>());
+		}
+
+		Map<String, PixelmonBoosterPlayerData.BoosterData> data = module.getPlayerData()
+				.getData()
+				.get(player.getUniqueId().toString());
+
+		if (!data.containsKey(boosterType.name().toLowerCase())) {
+			if (!createIfNotExists) {
+				return null;
+			}
+
+			data.put(boosterType.name().toLowerCase(), new PixelmonBoosterPlayerData.BoosterData());
+		}
+
+		return data.get(boosterType.name().toLowerCase());
+	}
+
+	public void activateGlobal(BoosterType boosterType) {
+		if (!boosters.containsKey(boosterType)) {
+			return;
+		}
+
+		BoosterBase boosterBase = boosters.get(boosterType);
+		boosterBase.setGlobalActivate(true);
+
+		this.saveGlobalActivate(boosterType);
+
+		for (Player player : module.getPlugin().getServer().getOnlinePlayers()) {
+			try {
+				this.add(player, boosterType, 0);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void saveGlobalActivate(BoosterType boosterType) {
+		if (boosterType.getType() == BoosterType.BoosterConfigureType.CHANCE) {
+			this.module.getConfig()
+					.getBoosters()
+					.getChanceBoosters()
+					.get(boosterType.name().toLowerCase())
+					.setGlobalActivate(false);
+		} else {
+			this.module.getConfig()
+					.getBoosters()
+					.getModifierBoosters()
+					.get(boosterType.name().toLowerCase())
+					.setGlobalActivate(false);
+		}
+
+		this.module.getConfigNode().save();
+	}
+
+	public boolean isGlobalActivated(BoosterType boosterType) {
+		if (!boosters.containsKey(boosterType)) {
+			return false;
+		}
+
+		BoosterBase boosterBase = boosters.get(boosterType);
+		return boosterBase.isGlobalActivate();
+	}
+
+	public void deactivateGlobal(BoosterType boosterType) {
+		if (!boosters.containsKey(boosterType)) {
+			return;
+		}
+
+		BoosterBase boosterBase = boosters.get(boosterType);
+		boosterBase.setGlobalActivate(false);
+		boosterBase.removeOnlyGlobalActivate();
+
+		this.saveGlobalActivate(boosterType);
+	}
+
+	public void reload() {
+		boosters.values().forEach(BoosterBase::reload);
+	}
+
+	public boolean isPlayerBoosterActivated(UUID uuid, BoosterType boosterType) {
+		if (!boosters.containsKey(boosterType)) {
+			return false;
+		}
+
+		if (!module.getPlayerData().getData().containsKey(uuid.toString())) {
+			return false;
+		}
+
+
+		PixelmonBoosterPlayerData.BoosterData boosterData = this.get(uuid, boosterType);
+		if (boosterData == null) {
+			return false;
+		}
+
+		return boosterData.isActivated();
+	}
 
 }
