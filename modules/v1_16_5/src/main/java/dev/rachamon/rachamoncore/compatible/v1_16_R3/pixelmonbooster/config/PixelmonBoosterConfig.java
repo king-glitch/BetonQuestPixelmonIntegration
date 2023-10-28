@@ -7,6 +7,7 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ConfigSerializable
@@ -28,6 +29,17 @@ public class PixelmonBoosterConfig {
 		@Setting(value = "interval-seconds")
 		@Comment("interval seconds [default: 60]")
 		protected int intervalSeconds = 60;
+		@Setting("allowed-random-pokemon-legendary")
+		@Comment("Allowed random pokemon to be legendary [default: false]")
+		protected boolean allowedRandomPokemonLegendary = false;
+
+		@Setting("allowed-random-pokemon-ultra-beast")
+		@Comment("Allowed random pokemon to be ultra beast [default: false]")
+		protected boolean allowedRandomPokemonUltraBeast = false;
+
+		@Setting("random-pokemon-blacklist")
+		@Comment("Random pokemon blacklist [default: []]")
+		protected List<String> randomPokemonBlacklist = List.of();
 	}
 
 	@Getter

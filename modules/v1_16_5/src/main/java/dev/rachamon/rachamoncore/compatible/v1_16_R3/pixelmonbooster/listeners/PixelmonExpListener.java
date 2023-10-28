@@ -18,7 +18,7 @@ public class PixelmonExpListener {
 
 
 	@SubscribeEvent
-	public void onDrop(ExperienceGainEvent event) {
+	public void onExpGain(ExperienceGainEvent event) {
 
 		ServerPlayerEntity player = event.pokemon.getPlayerOwner();
 		PixelmonExpBooster booster = (PixelmonExpBooster) BoosterService.getBoosters().get(BoosterType.EXP);

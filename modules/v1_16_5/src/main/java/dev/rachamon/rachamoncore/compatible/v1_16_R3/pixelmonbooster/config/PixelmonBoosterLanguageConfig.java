@@ -80,6 +80,10 @@ public class PixelmonBoosterLanguageConfig {
 		@Comment("Message when booster info")
 		protected String boosterJoinInfo = "&7Currently you have &a{amount} &7boosters, &a{activated-amount} &7activated: &a{boosters}";
 
+		@Setting("global-activated-join-info")
+		@Comment("Message when global booster activated\n" + "variables:\n" + " - {booster}: booster name")
+		protected String globalActivatedJoinInfo = "&7Currently global boosters &a{boosters}&7 are &a&lactivated&7";
+
 		@Setting("reload")
 		@Comment("Message when reload config")
 		protected String reload = "&7Reload config";

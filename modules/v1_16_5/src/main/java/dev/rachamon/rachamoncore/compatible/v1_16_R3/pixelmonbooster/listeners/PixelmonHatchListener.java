@@ -9,16 +9,16 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.bukkit.entity.Player;
 
-public class PixelmonHatchBooster {
+public class PixelmonHatchListener {
 	private final PixelmonBoosterFactoryImpl module;
 
-	public PixelmonHatchBooster(PixelmonBoosterFactoryImpl instance) {
+	public PixelmonHatchListener(PixelmonBoosterFactoryImpl instance) {
 		this.module = instance;
 	}
 
 
 	@SubscribeEvent
-	public void onDrop(DayCareEvent.PreCollect event) {
+	public void onBreed(DayCareEvent.PreCollect event) {
 
 		ServerPlayerEntity player = event.getPlayer();
 		PixelmonEggHatchBooster booster = (PixelmonEggHatchBooster) BoosterService.getBoosters()

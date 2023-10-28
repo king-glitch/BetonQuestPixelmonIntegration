@@ -4,6 +4,7 @@ import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.Pixe
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterBase;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonDropBooster;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonHASpawnRateBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.TrainerMoneyBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
 import lombok.Getter;
@@ -26,6 +27,12 @@ public class BoosterService {
 
 		boosters.put(BoosterType.BATTLE_WINNING, new TrainerMoneyBooster(plugin));
 		boosters.put(BoosterType.DROP, new PixelmonDropBooster(plugin));
+		boosters.put(BoosterType.HIDDEN_ABILITY, new PixelmonHASpawnRateBooster(plugin));
+		boosters.put(BoosterType.SHINY_RATE, new PixelmonHASpawnRateBooster(plugin));
+		boosters.put(BoosterType.HATCH, new PixelmonHASpawnRateBooster(plugin));
+		boosters.put(BoosterType.CAPTURE, new PixelmonHASpawnRateBooster(plugin));
+		boosters.put(BoosterType.EXP, new PixelmonHASpawnRateBooster(plugin));
+
 
 		this.module.getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(this.module.getPlugin(), () -> {
 			this.module.getModuleLogger().info("Saving player data...");

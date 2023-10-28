@@ -16,9 +16,7 @@ import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands.ad
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterConfig;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterLanguageConfig;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners.BattleEndListener;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners.PixelmonDropListener;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners.PlayerActionListener;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners.*;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -99,8 +97,18 @@ public class PixelmonBoosterFactoryImpl extends PixelmonBoosterFactory {
 		moduleLogger.info("Registering events...");
 		BattleEndListener battleEndListener = new BattleEndListener(this);
 		PixelmonDropListener dropListener = new PixelmonDropListener(this);
+		PixelmonSpawnListener spawnListener = new PixelmonSpawnListener(this);
+		PixelmonHatchListener hatchListener = new PixelmonHatchListener(this);
+		PixelmonExpListener expListener = new PixelmonExpListener(this);
+		PixelmonCaptureListener captureListener = new PixelmonCaptureListener(this);
+
 		Pixelmon.EVENT_BUS.addListener(battleEndListener::onPlayerBeatTrainer);
 		Pixelmon.EVENT_BUS.addListener(dropListener::onDrop);
+		Pixelmon.EVENT_BUS.addListener(spawnListener::onPixelmonSpawn);
+		Pixelmon.EVENT_BUS.addListener(hatchListener::onBreed);
+		Pixelmon.EVENT_BUS.addListener(expListener::onExpGain);
+		Pixelmon.EVENT_BUS.addListener(captureListener::onGeneralCapture);
+		Pixelmon.EVENT_BUS.addListener(captureListener::onRaidCapture);
 
 
 		moduleLogger.info("Registered commands!");

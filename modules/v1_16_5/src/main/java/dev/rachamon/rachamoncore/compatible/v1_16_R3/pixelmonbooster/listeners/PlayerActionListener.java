@@ -1,6 +1,7 @@
 package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners;
 
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterBase;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
@@ -30,28 +31,47 @@ public class PlayerActionListener implements Listener {
 		}
 
 		List<String> activatedBoosters = new ArrayList<>();
+		List<String> activatedGlobalBoosters = new ArrayList<>();
 		int boosterAmount = 0;
-		for (Map.Entry<String, PixelmonBoosterPlayerData.BoosterData> data : boosterData.entrySet()) {
-			if (data.getValue().getTimeLeft() > 0) {
+		for (Map.Entry<BoosterType, BoosterBase> booster : BoosterService.getBoosters().entrySet()) {
+			PixelmonBoosterPlayerData.BoosterData data = boosterData.get(booster.getKey().name().toLowerCase());
+
+			if (data == null && !booster.getValue().isGlobalActivate()) {
+				continue;
+			}
+
+			if (data != null && data.getTimeLeft() > 0) {
 				boosterAmount++;
 			}
 
-			if (data.getValue().isActivated()) {
-				BoosterService.getBoosters()
-						.get(BoosterType.valueOf(data.getKey().toUpperCase()))
-						.add(player.getUniqueId());
-				activatedBoosters.add(BoosterType.valueOf(data.getKey().toUpperCase()).getName());
+			if (booster.getValue().isGlobalActivate()) {
+				booster.getValue().add(player.getUniqueId());
+				activatedGlobalBoosters.add(booster.getKey().getName());
+			} else if (data.isActivated()) {
+				booster.getValue().add(player.getUniqueId());
+				activatedBoosters.add(booster.getKey().name());
 			}
+
 		}
 
-		if (!activatedBoosters.isEmpty()) {
-			player.sendMessage(module.getLocale()
-					.from(s -> s.getGeneralConfig().getBoosterJoinInfo())
-					.process("boosters", String.join(", ", activatedBoosters))
-					.process("amount", boosterAmount)
-					.process("activated-amount", activatedBoosters.size())
-					.get());
-		}
+		int finalBoosterAmount = boosterAmount;
+		module.getPlugin().getServer().getScheduler().runTaskLaterAsynchronously(module.getPlugin(), () -> {
+			if (!activatedBoosters.isEmpty()) {
+				player.sendMessage(module.getLocale()
+						.from(s -> s.getGeneralConfig().getBoosterJoinInfo())
+						.process("boosters", String.join(", ", activatedBoosters))
+						.process("amount", finalBoosterAmount)
+						.process("activated-amount", activatedBoosters.size())
+						.get());
+			}
+
+			if (!activatedGlobalBoosters.isEmpty()) {
+				player.sendMessage(module.getLocale()
+						.from(s -> s.getGeneralConfig().getGlobalActivatedJoinInfo())
+						.process("boosters", String.join(", ", activatedGlobalBoosters))
+						.get());
+			}
+		}, 60L);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
