@@ -17,10 +17,10 @@ import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.Pixe
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterLanguageConfig;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners.BattleEndListener;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners.PixelmonDropListener;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners.PlayerActionListener;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
@@ -97,8 +97,10 @@ public class PixelmonBoosterFactoryImpl extends PixelmonBoosterFactory {
 		this.plugin.getServer().getPluginManager().registerEvents(new PlayerActionListener(), this.getPlugin());
 
 		moduleLogger.info("Registering events...");
-		BattleEndListener listener = new BattleEndListener(this);
-		Pixelmon.EVENT_BUS.addListener(listener::onPlayerBeatTrainer);
+		BattleEndListener battleEndListener = new BattleEndListener(this);
+		PixelmonDropListener dropListener = new PixelmonDropListener(this);
+		Pixelmon.EVENT_BUS.addListener(battleEndListener::onPlayerBeatTrainer);
+		Pixelmon.EVENT_BUS.addListener(dropListener::onDrop);
 
 
 		moduleLogger.info("Registered commands!");

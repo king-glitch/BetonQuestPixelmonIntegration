@@ -3,6 +3,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterBase;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonDropBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.TrainerMoneyBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
 import lombok.Getter;
@@ -24,20 +25,31 @@ public class BoosterService {
 		this.module = plugin;
 
 		boosters.put(BoosterType.BATTLE_WINNING, new TrainerMoneyBooster(plugin));
+		boosters.put(BoosterType.DROP, new PixelmonDropBooster(plugin));
+
+		this.module.getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(this.module.getPlugin(), () -> {
+			this.module.getModuleLogger().info("Saving player data...");
+			try {
+				this.module.getPlayerDataConfigNode().save();
+			} catch (Exception e) {
+				this.module.getModuleLogger().error("Error while saving player data!");
+			}
+
+		}, 0L, 20L * 60L * 5L);
 	}
 
-	public boolean resume(Player player, BoosterType boosterType) throws IOException {
+	public void resume(Player player, BoosterType boosterType) throws IOException {
 		if (!boosters.containsKey(boosterType)) {
-			return false;
+			return;
 		}
 
 		PixelmonBoosterPlayerData.BoosterData boosterData = this.get(player, boosterType);
 		if (boosterData == null) {
-			return false;
+			return;
 		}
 
 		if (boosterData.getTimeLeft() < 1) {
-			return false;
+			return;
 		}
 
 		boosters.get(boosterType).add(player.getUniqueId());
@@ -46,7 +58,6 @@ public class BoosterService {
 
 		module.getPlayerData().update(player.getUniqueId().toString(), boosterType.name().toLowerCase(), boosterData);
 		module.getPlayerDataConfigNode().save();
-		return true;
 	}
 
 	public void pause(Player player, BoosterType boosterType) throws IOException {

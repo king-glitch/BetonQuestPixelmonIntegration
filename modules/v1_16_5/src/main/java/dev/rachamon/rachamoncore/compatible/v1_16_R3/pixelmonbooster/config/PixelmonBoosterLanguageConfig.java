@@ -111,6 +111,14 @@ public class PixelmonBoosterLanguageConfig {
 		@Setting("beat-trainer-win-money")
 		@Comment("Message when beat trainer win money\n" + "variables:\n" + " - {money}: money")
 		protected String beatTrainerWinMoney = "&7You beat trainer and get &a{money} &7more money";
+
+		@Setting("pixelmon-extra-drops")
+		@Comment("Message when pixelmon extra drops\n" + "variables:\n" + " - {data}: data")
+		protected String pixelmonExtraDrops = "&7You got extra drops: {data}";
+
+		@Setting("pixelmon-extra-drops-item-template")
+		@Comment("Message when pixelmon extra drops\n" + "variables:\n" + " - {amount}: amount\n" + " - {item}: item name")
+		protected String pixelmonExtraDropsItemTemplate = "&8x&a{amount} &2{item}&7";
 	}
 
 }

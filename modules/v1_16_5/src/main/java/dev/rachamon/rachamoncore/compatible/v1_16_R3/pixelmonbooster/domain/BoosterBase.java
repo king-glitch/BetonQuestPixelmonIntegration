@@ -110,12 +110,6 @@ public class BoosterBase {
 			return false;
 		});
 
-		try {
-			this.module.getPlayerDataConfigNode().save();
-		} catch (Exception e) {
-			this.module.getModuleLogger().error("Error while saving player data!");
-		}
-
 		if (!this.players.isEmpty()) {
 			return;
 		}
