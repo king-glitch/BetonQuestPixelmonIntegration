@@ -112,6 +112,18 @@ public class PixelmonBoosterLanguageConfig {
 		@Comment("Message when beat trainer win money\n" + "variables:\n" + " - {money}: money")
 		protected String beatTrainerWinMoney = "&7You beat trainer and get &a{money} &7more money";
 
+		@Setting("exp-gain")
+		@Comment("Message when exp gain\n" + "variables:\n" + " - {exp}: exp")
+		protected String expGain = "&7You got &a{exp} &7more exp";
+
+		@Setting("capture-rate")
+		@Comment("Message when capture rate\n" + "variables:\n" + " - {rate}: rate")
+		protected String captureRate = "&7You got &a{rate} &7more capture rate";
+
+		@Setting("egg-steps")
+		@Comment("Message when egg steps\n" + "variables:\n" + " - {steps}: steps")
+		protected String eggSteps = "&7You got &a{steps} &7less egg steps";
+
 		@Setting("pixelmon-extra-drops")
 		@Comment("Message when pixelmon extra drops\n" + "variables:\n" + " - {data}: data")
 		protected String pixelmonExtraDrops = "&7You got extra drops: {data}";

@@ -54,7 +54,7 @@ public class BoosterBase {
 		this.task = module.getPlugin()
 				.getServer()
 				.getScheduler()
-				.runTaskTimerAsynchronously(module.getPlugin(), this::process, 40L, this.interval * 20L);
+				.runTaskTimerAsynchronously(module.getPlugin(), this::process, this.interval * 20L, this.interval * 20L);
 	}
 
 	public void shutdown() {
