@@ -32,7 +32,7 @@ public enum BoosterType {
 		return null;
 	}
 
-	public static enum BoosterConfigureType {
+	public enum BoosterConfigureType {
 		CHANCE,
 		MODIFIER,
 	}

@@ -59,7 +59,7 @@ public class ConfigFactory<P extends IModuleFactory<?>, T> {
 			this.plugin.getModuleLogger().success("loaded " + this.getName() + " configuration...");
 			return this.root;
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			this.plugin.getModuleLogger().error(Arrays.toString(e.getStackTrace()));
 		}
 		return root;

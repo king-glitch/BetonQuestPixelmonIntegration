@@ -16,6 +16,7 @@ import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands.ad
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterConfig;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterLanguageConfig;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners.*;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import lombok.Getter;
@@ -134,10 +135,6 @@ public class PixelmonBoosterFactoryImpl extends PixelmonBoosterFactory {
 				this,
 				"language.yaml"
 		);
-		this.configNode = new ConfigFactory<>(
-				this,
-				"main.yaml"
-		);
 
 		this.config = this.configNode.setHeader("PixelmonBooster Config").build(PixelmonBoosterConfig.class);
 		this.locale = new Locale<>(
@@ -145,6 +142,11 @@ public class PixelmonBoosterFactoryImpl extends PixelmonBoosterFactory {
 						.build(PixelmonBoosterLanguageConfig.class),
 				s -> s.getGeneralConfig().getPrefix()
 		);
-		moduleLogger.info("Loaded configs!");
+
+		this.boosterService.reload();
+
+		moduleLogger.info("successfully reloaded configs!");
 	}
+
+
 }

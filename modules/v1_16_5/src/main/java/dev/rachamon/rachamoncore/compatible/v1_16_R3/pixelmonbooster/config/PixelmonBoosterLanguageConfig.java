@@ -86,7 +86,7 @@ public class PixelmonBoosterLanguageConfig {
 
 		@Setting("reload")
 		@Comment("Message when reload config")
-		protected String reload = "&7Reload config";
+		protected String reload = "&7the configuration has been reloaded";
 	}
 
 	@Getter

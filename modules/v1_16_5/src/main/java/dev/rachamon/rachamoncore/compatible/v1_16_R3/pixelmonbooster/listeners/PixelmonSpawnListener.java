@@ -237,7 +237,6 @@ public class PixelmonSpawnListener {
 			return null;
 		}
 
-
 		return null;
 
 	}

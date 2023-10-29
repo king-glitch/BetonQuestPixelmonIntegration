@@ -41,8 +41,12 @@ public class InfoCommand extends AbstractCommand {
 					.get()).append("\n");
 		}
 
-		for (String template : module.getLocale().get().getGeneralConfig().getBoosterInfoTemplate()) {
-			text.append(template.replaceAll("\\{data}", dataText.toString())).append("\n");
+		for (int i = 0; i < module.getLocale().get().getGeneralConfig().getBoosterInfoTemplate().size(); i++) {
+			int finalI = i;
+			text.append(module.getLocale()
+					.raw(s -> s.getGeneralConfig().getBoosterInfoTemplate().get(finalI))
+					.process("data", dataText.toString())
+					.get()).append("\n");
 		}
 
 

@@ -3,9 +3,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterBase;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonDropBooster;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonHASpawnRateBooster;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.TrainerMoneyBooster;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.*;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -28,10 +26,10 @@ public class BoosterService {
 		boosters.put(BoosterType.BATTLE_WINNING, new TrainerMoneyBooster(plugin));
 		boosters.put(BoosterType.DROP, new PixelmonDropBooster(plugin));
 		boosters.put(BoosterType.HIDDEN_ABILITY, new PixelmonHASpawnRateBooster(plugin));
-		boosters.put(BoosterType.SHINY_RATE, new PixelmonHASpawnRateBooster(plugin));
-		boosters.put(BoosterType.HATCH, new PixelmonHASpawnRateBooster(plugin));
-		boosters.put(BoosterType.CAPTURE, new PixelmonHASpawnRateBooster(plugin));
-		boosters.put(BoosterType.EXP, new PixelmonHASpawnRateBooster(plugin));
+		boosters.put(BoosterType.SHINY_RATE, new PixelmonShinySpawnRateBooster(plugin));
+		boosters.put(BoosterType.HATCH, new PixelmonEggHatchBooster(plugin));
+		boosters.put(BoosterType.CAPTURE, new PixelmonCaptureBooster(plugin));
+		boosters.put(BoosterType.EXP, new PixelmonExpBooster(plugin));
 
 
 		this.module.getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(this.module.getPlugin(), () -> {
@@ -200,13 +198,20 @@ public class BoosterService {
 
 	public void activateGlobal(BoosterType boosterType) {
 		if (!boosters.containsKey(boosterType)) {
+			module.getModuleLogger().error("Booster " + boosterType.name() + " not found!");
 			return;
 		}
 
 		BoosterBase boosterBase = boosters.get(boosterType);
 		boosterBase.setGlobalActivate(true);
 
-		this.saveGlobalActivate(boosterType);
+		this.saveGlobalActivate(boosterType, true);
+
+		module.getModuleLogger()
+				.info("Starting " + boosterType.name() + " booster! (Global);" + module.getPlugin()
+						.getServer()
+						.getOnlinePlayers()
+						.size() + " players");
 
 		for (Player player : module.getPlugin().getServer().getOnlinePlayers()) {
 			try {
@@ -217,19 +222,19 @@ public class BoosterService {
 		}
 	}
 
-	private void saveGlobalActivate(BoosterType boosterType) {
+	private void saveGlobalActivate(BoosterType boosterType, boolean globalActivate) {
 		if (boosterType.getType() == BoosterType.BoosterConfigureType.CHANCE) {
 			this.module.getConfig()
 					.getBoosters()
 					.getChanceBoosters()
-					.get(boosterType.name().toLowerCase())
-					.setGlobalActivate(false);
+					.get(boosterType.toString())
+					.setGlobalActivate(globalActivate);
 		} else {
 			this.module.getConfig()
 					.getBoosters()
 					.getModifierBoosters()
-					.get(boosterType.name().toLowerCase())
-					.setGlobalActivate(false);
+					.get(boosterType.toString())
+					.setGlobalActivate(globalActivate);
 		}
 
 		this.module.getConfigNode().save();
@@ -253,7 +258,7 @@ public class BoosterService {
 		boosterBase.setGlobalActivate(false);
 		boosterBase.removeOnlyGlobalActivate();
 
-		this.saveGlobalActivate(boosterType);
+		this.saveGlobalActivate(boosterType, false);
 	}
 
 	public void reload() {

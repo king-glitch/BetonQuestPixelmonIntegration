@@ -60,7 +60,7 @@ public class PixelmonBoosterConfig {
 			put(BoosterType.EV.toString(), new ModifierBooster("{current}*2"));
 			put(BoosterType.EXP.toString(), new ModifierBooster("{current}*2"));
 			put(BoosterType.DROP.toString(), new ModifierBooster("{current}+2"));
-			put(BoosterType.HATCH.toString(), new ModifierBooster("{current}-50"));
+			put(BoosterType.HATCH.toString(), new ModifierBooster("{current}*0.1"));
 			put(BoosterType.CAPTURE.toString(), new ModifierBooster("{current}+5"));
 			put(BoosterType.BATTLE_WINNING.toString(), new ModifierBooster("{current}*2"));
 		}};

@@ -15,7 +15,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class PixelmonDropListener {
 	private final PixelmonBoosterFactoryImpl module;
@@ -50,22 +53,34 @@ public class PixelmonDropListener {
 		List<ItemStack> items = DropItemRegistry.getDropsForPokemon(dropper);
 
 		try {
-			Map<String, Integer> extraDrops = new HashMap<>();
+			Map<String, ItemStack> extraDrops = new HashMap<>();
 			ImmutableList<DroppedItem> drops = event.getDrops();
 			int difference = (booster.calculate(drops.size())) - drops.size();
 			for (int i = 0; i < difference; i++) {
-				ItemStack stack = items.get(new Random().nextInt(items.size()));
+				int current = new Random().nextInt(items.size());
+				ItemStack stack = items.get(current);
 				Item dropItem = stack.getItem();
+
+				if (!extraDrops.containsKey(dropItem.getName(stack).getString())) {
+					stack.setCount(0);
+					extraDrops.put(dropItem.getName(stack).getString(), stack);
+				}
+
+				stack.setCount(stack.getCount() + 1);
 				try {
+
 					extraDrops.put(
 							dropItem.getName(stack).getString(),
-							extraDrops.getOrDefault(Objects.requireNonNull(dropItem.getRegistryName()).toString(), 0) + 1
+							stack
 					);
+
 				} catch (Exception ignored) {
 
 				}
+			}
 
-				event.addDrop(new ItemStack(dropItem));
+			for (Map.Entry<String, ItemStack> entry : extraDrops.entrySet()) {
+				event.addDrop(entry.getValue());
 			}
 
 			Player p = this.module.getPlugin().getServer().getPlayer(player.getUUID());
@@ -74,11 +89,11 @@ public class PixelmonDropListener {
 			}
 
 			StringBuilder data = new StringBuilder();
-			for (Map.Entry<String, Integer> entry : extraDrops.entrySet()) {
+			for (Map.Entry<String, ItemStack> entry : extraDrops.entrySet()) {
 				data.append(this.module.getLocale()
 						.raw(s -> s.getBoosterConfig().getPixelmonExtraDropsItemTemplate())
 						.process("item", entry.getKey())
-						.process("amount", entry.getValue())
+						.process("amount", entry.getValue().getCount())
 						.get()).append(", ");
 			}
 			p.sendMessage(this.module.getLocale()

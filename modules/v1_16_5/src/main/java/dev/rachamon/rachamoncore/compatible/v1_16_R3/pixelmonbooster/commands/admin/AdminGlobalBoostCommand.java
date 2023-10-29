@@ -53,12 +53,18 @@ public class AdminGlobalBoostCommand extends AbstractCommand {
 			}
 
 			try {
-				this.module.getBoosterService().activateGlobal(BoosterType.valueOf(args[0]));
+				this.module.getBoosterService().activateGlobal(boosterType);
+				this.module.getPlugin().getServer().getOnlinePlayers().forEach(player -> {
+					player.sendMessage(this.module.getLocale()
+							.from(s -> s.getGlobalBoosterActivation().getActivated())
+							.process("booster", boosterType.getName())
+							.get());
+				});
 			} catch (Exception e) {
 				return ReturnType.FAILURE;
 			}
 		} else if (args[1].equalsIgnoreCase("deactivate")) {
-			if (this.module.getBoosterService().isGlobalActivated(boosterType)) {
+			if (!this.module.getBoosterService().isGlobalActivated(boosterType)) {
 				sender.sendMessage(this.module.getLocale()
 						.from(s -> s.getGlobalBoosterActivation().getAlreadyDeactivated())
 						.process("booster", boosterType.getName())
@@ -66,32 +72,20 @@ public class AdminGlobalBoostCommand extends AbstractCommand {
 				return ReturnType.FAILURE;
 			}
 			try {
-				this.module.getBoosterService().deactivateGlobal(BoosterType.valueOf(args[0]));
-				sender.sendMessage(this.module.getLocale()
-						.from(s -> s.getGlobalBoosterActivation().getDeactivated())
-						.process("booster", boosterType.getName())
-						.get());
+				this.module.getBoosterService().deactivateGlobal(boosterType);
+				this.module.getPlugin().getServer().getOnlinePlayers().forEach(player -> {
+					player.sendMessage(this.module.getLocale()
+							.from(s -> s.getGlobalBoosterActivation().getDeactivated())
+							.process("booster", boosterType.getName())
+							.get());
+				});
 			} catch (Exception e) {
 				return ReturnType.FAILURE;
 			}
 		}
 
-		this.module.getPlugin().getServer().getOnlinePlayers().forEach(player -> {
-			if (args[1].equalsIgnoreCase("activate")) {
-				player.sendMessage(this.module.getLocale()
-						.from(s -> s.getGlobalBoosterActivation().getActivated())
-						.process("booster", boosterType.getName())
-						.get());
-			} else if (args[1].equalsIgnoreCase("deactivate")) {
-				player.sendMessage(this.module.getLocale()
-						.from(s -> s.getGlobalBoosterActivation().getDeactivated())
-						.process("booster", boosterType.getName())
-						.get());
-			}
-		});
 
-
-		return AbstractCommand.ReturnType.SUCCESS;
+		return ReturnType.SUCCESS;
 	}
 
 	@Override

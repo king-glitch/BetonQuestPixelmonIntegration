@@ -16,7 +16,7 @@ public class BoosterBase {
 	private final BoosterType boosterType;
 	private PixelmonBoosterConfig.Booster config;
 	private final PixelmonBoosterFactoryImpl module;
-	private final int interval;
+	private int interval;
 
 	private boolean isRunning = false;
 	private BukkitTask task;
@@ -27,17 +27,7 @@ public class BoosterBase {
 	public BoosterBase(PixelmonBoosterFactoryImpl module, BoosterType boosterType) {
 		this.boosterType = boosterType;
 		this.module = module;
-		if (boosterType.getType() == BoosterType.BoosterConfigureType.CHANCE) {
-			this.config = this.module.getConfig().getBoosters().getChanceBoosters().get(boosterType.name());
-			this.setGlobalActivate(((PixelmonBoosterConfig.ChanceBooster) config).isGlobalActivate());
-		} else {
-			this.config = this.module.getConfig().getBoosters().getModifierBoosters().get(boosterType.name());
-			this.setGlobalActivate(((PixelmonBoosterConfig.ModifierBooster) config).isGlobalActivate());
-
-		}
-
-
-		this.interval = this.module.getConfig().getGeneralConfig().getIntervalSeconds();
+		this.reload();
 		this.module.getModuleLogger()
 				.info("Loaded " + boosterType.name() + " booster! (Interval: " + interval + ")" + " (GlobalActivate: " + isGlobalActivate + ")");
 	}
@@ -54,7 +44,12 @@ public class BoosterBase {
 		this.task = module.getPlugin()
 				.getServer()
 				.getScheduler()
-				.runTaskTimerAsynchronously(module.getPlugin(), this::process, this.interval * 20L, this.interval * 20L);
+				.runTaskTimerAsynchronously(
+						module.getPlugin(),
+						this::process,
+						this.interval * 20L,
+						this.interval * 20L
+				);
 	}
 
 	public void shutdown() {
@@ -68,10 +63,15 @@ public class BoosterBase {
 
 	public void reload() {
 		if (boosterType.getType() == BoosterType.BoosterConfigureType.CHANCE) {
-			this.config = module.getConfig().getBoosters().getChanceBoosters().get(boosterType.name().toLowerCase());
+			this.config = this.module.getConfig().getBoosters().getChanceBoosters().get(boosterType.name());
+			this.setGlobalActivate(((PixelmonBoosterConfig.ChanceBooster) config).isGlobalActivate());
 		} else {
-			this.config = module.getConfig().getBoosters().getModifierBoosters().get(boosterType.name().toLowerCase());
+			this.config = this.module.getConfig().getBoosters().getModifierBoosters().get(boosterType.name());
+			this.setGlobalActivate(((PixelmonBoosterConfig.ModifierBooster) config).isGlobalActivate());
 		}
+
+
+		this.interval = this.module.getConfig().getGeneralConfig().getIntervalSeconds();
 	}
 
 	public void process() {
@@ -133,9 +133,7 @@ public class BoosterBase {
 
 	public void setGlobalActivate(boolean globalActivate) {
 		this.isGlobalActivate = globalActivate;
-		if (globalActivate) {
-			this.initialize();
-		}
+		this.initialize();
 	}
 
 	public void removeOnlyGlobalActivate() {
