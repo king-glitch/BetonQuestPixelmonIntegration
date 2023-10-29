@@ -15,6 +15,6 @@ public class PixelmonBossSpawnRateBooster extends BoosterBase {
 
 	public boolean success() {
 		PixelmonBoosterConfig.ChanceBooster config = (PixelmonBoosterConfig.ChanceBooster) this.getConfig();
-		return config.getChance() >= new Random().nextDouble();
+		return ((double) 1 / config.getChance()) >= new Random().nextFloat();
 	}
 }

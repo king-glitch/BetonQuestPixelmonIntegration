@@ -39,13 +39,12 @@ public class BoosterBase {
 
 		isRunning = true;
 
-		this.module.getPlugin().getLogger().info("Starting " + boosterType.name() + " booster...");
+		this.module.getModuleLogger().info("Starting " + this.boosterType.name() + " booster...");
 
 		this.task = module.getPlugin()
 				.getServer()
 				.getScheduler()
-				.runTaskTimerAsynchronously(
-						module.getPlugin(),
+				.runTaskTimerAsynchronously(module.getPlugin(),
 						this::process,
 						this.interval * 20L,
 						this.interval * 20L
@@ -92,7 +91,8 @@ public class BoosterBase {
 				return true;
 			}
 
-			data.setTimeLeft(data.getTimeLeft() - interval);
+			data.setTimeLeft(Math.max(data.getTimeLeft() - interval, 0));
+
 			this.module.getPlayerData().update(p.toString(), boosterType.name().toLowerCase(), data);
 
 			this.module.getPlayerData().getData().get(p.toString()).put(boosterType.name().toLowerCase(), data);
@@ -133,7 +133,9 @@ public class BoosterBase {
 
 	public void setGlobalActivate(boolean globalActivate) {
 		this.isGlobalActivate = globalActivate;
-		this.initialize();
+		if (!module.getPlugin().getServer().getOnlinePlayers().isEmpty()) {
+			this.initialize();
+		}
 	}
 
 	public void removeOnlyGlobalActivate() {

@@ -14,12 +14,14 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.pixelmonmod.pixelmon.spawning.PlayerTrackingSpawner;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonBossSpawnRateBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonHASpawnRateBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonShinySpawnRateBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -51,81 +53,121 @@ public class PixelmonSpawnListener {
 
 		PixelmonEntity pixelmon = (PixelmonEntity) event.action.getOrCreateEntity();
 
+		if (this.onSpawnBossModifier(player, pixelmon)) {
+			return;
+		}
+
 		this.onSpawnHAModifier(player, pixelmon);
 		this.onSpawnShinyModifier(player, pixelmon);
-		this.onSpawnBossModifier(player, pixelmon);
+
 	}
 
-	public void onSpawnHAModifier(ServerPlayerEntity player, PixelmonEntity entity) {
+	public boolean onSpawnHAModifier(ServerPlayerEntity player, PixelmonEntity entity) {
 		PixelmonHASpawnRateBooster booster = (PixelmonHASpawnRateBooster) BoosterService.getBoosters()
 				.get(BoosterType.HIDDEN_ABILITY);
 
 		if (booster == null) {
-			return;
+			return false;
 		}
 
 		boolean isPlayerBoosterActivated = this.module.getBoosterService()
 				.isPlayerBoosterActivated(player.getUUID(), BoosterType.HIDDEN_ABILITY);
 
 		if (!booster.isGlobalActivate() && !isPlayerBoosterActivated) {
-			return;
+			return false;
 		}
 
 		if (!booster.success()) {
-			return;
+			return false;
 		}
 
 		entity.getPokemon().setAbility(entity.getForm().getAbilities().getRandomHiddenAbility());
 		entity.update(EnumUpdateType.Ability);
+
+		Player bukkitPlayer = this.module.getPlugin().getServer().getPlayer(player.getUUID());
+		if (bukkitPlayer == null) {
+			return false;
+		}
+
+		bukkitPlayer.sendMessage(this.module.getLocale()
+				.from(s -> s.getBoosterConfig().getHiddenAbilitySpawnSuccess())
+				.process("pokemon", entity.getPokemon().getSpecies().getName())
+				.get());
+
+		return true;
 	}
 
-	public void onSpawnShinyModifier(ServerPlayerEntity player, PixelmonEntity entity) {
+	public boolean onSpawnShinyModifier(ServerPlayerEntity player, PixelmonEntity entity) {
 		if (!entity.getPokemon().isDefaultForm() || entity.getPokemon().isShiny()) {
-			return;
+			return false;
 		}
 
 		PixelmonShinySpawnRateBooster booster = (PixelmonShinySpawnRateBooster) BoosterService.getBoosters()
 				.get(BoosterType.SHINY_RATE);
 
 		if (booster == null) {
-			return;
+			return false;
 		}
 
 		boolean isPlayerBoosterActivated = this.module.getBoosterService()
 				.isPlayerBoosterActivated(player.getUUID(), BoosterType.SHINY_RATE);
 
 		if (!booster.isGlobalActivate() && !isPlayerBoosterActivated) {
-			return;
+			return false;
 		}
 
 		if (!booster.success()) {
-			return;
+			return false;
 		}
 
 
 		entity.getPokemon().setShiny(true);
+
+		Player bukkitPlayer = this.module.getPlugin().getServer().getPlayer(player.getUUID());
+		if (bukkitPlayer == null) {
+			return false;
+		}
+
+		bukkitPlayer.sendMessage(this.module.getLocale()
+				.from(s -> s.getBoosterConfig().getShinySpawnSuccess())
+				.process("pokemon", entity.getPokemon().getSpecies().getName())
+				.get());
+
+		return true;
 	}
 
-	public void onSpawnBossModifier(ServerPlayerEntity player, PixelmonEntity entity) {
-		PixelmonShinySpawnRateBooster booster = (PixelmonShinySpawnRateBooster) BoosterService.getBoosters()
+	public boolean onSpawnBossModifier(ServerPlayerEntity player, PixelmonEntity entity) {
+		PixelmonBossSpawnRateBooster booster = (PixelmonBossSpawnRateBooster) BoosterService.getBoosters()
 				.get(BoosterType.BOSS);
 
 		if (booster == null) {
-			return;
+			return false;
 		}
 
 		boolean isPlayerBoosterActivated = this.module.getBoosterService()
 				.isPlayerBoosterActivated(player.getUUID(), BoosterType.BOSS);
 
 		if (!booster.isGlobalActivate() && !isPlayerBoosterActivated) {
-			return;
+			return false;
 		}
 
 		if (!booster.success()) {
-			return;
+			return false;
 		}
 
 		entity.setBossTier(BossTierRegistry.getRandomBossTier());
+
+		Player bukkitPlayer = this.module.getPlugin().getServer().getPlayer(player.getUUID());
+		if (bukkitPlayer == null) {
+			return false;
+		}
+
+		bukkitPlayer.sendMessage(this.module.getLocale()
+				.from(s -> s.getBoosterConfig().getHiddenAbilitySpawnSuccess())
+				.process("pokemon", entity.getPokemon().getSpecies().getName())
+				.get());
+
+		return true;
 	}
 
 	@Nullable

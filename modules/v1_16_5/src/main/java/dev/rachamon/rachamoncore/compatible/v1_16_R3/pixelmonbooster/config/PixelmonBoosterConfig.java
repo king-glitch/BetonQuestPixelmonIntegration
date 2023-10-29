@@ -48,10 +48,10 @@ public class PixelmonBoosterConfig {
 		@Setting(value = "chance-boosters")
 		@Comment("Chance Boosters ")
 		protected Map<String, ChanceBooster> chanceBoosters = new HashMap<String, ChanceBooster>() {{
-			put(BoosterType.BOSS.toString(), new ChanceBooster(0.10));
-			put(BoosterType.POKEMON_SPAWN.toString(), new ChanceBooster(0.10));
-			put(BoosterType.SHINY_RATE.toString(), new ChanceBooster(0.000244F));
-			put(BoosterType.HIDDEN_ABILITY.toString(), new ChanceBooster(0.000244F));
+			put(BoosterType.BOSS.toString(), new ChanceBooster(128));
+			put(BoosterType.POKEMON_SPAWN.toString(), new ChanceBooster(10));
+			put(BoosterType.SHINY_RATE.toString(), new ChanceBooster(1000));
+			put(BoosterType.HIDDEN_ABILITY.toString(), new ChanceBooster(1000));
 		}};
 
 		@Setting("modifier-boosters")
@@ -73,7 +73,8 @@ public class PixelmonBoosterConfig {
 	@ConfigSerializable
 	public static class ChanceBooster extends Booster {
 		@Setting(value = "chance")
-		protected double chance = 0.20;
+		@Comment("1 divided by chance [default: 2048]")
+		protected double chance = 2048;
 		@Setting(value = "global-activate")
 		protected boolean globalActivate = false;
 

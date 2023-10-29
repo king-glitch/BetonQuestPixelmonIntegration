@@ -36,20 +36,13 @@ public class PlayerActionListener implements Listener {
 		for (Map.Entry<BoosterType, BoosterBase> booster : BoosterService.getBoosters().entrySet()) {
 			PixelmonBoosterPlayerData.BoosterData data = boosterData.get(booster.getKey().name().toLowerCase());
 
-			if (data == null && !booster.getValue().isGlobalActivate()) {
-				continue;
-			}
-
-			if (data != null && data.getTimeLeft() > 0) {
-				boosterAmount++;
-			}
-
 			if (booster.getValue().isGlobalActivate()) {
 				booster.getValue().add(player.getUniqueId());
 				activatedGlobalBoosters.add(booster.getKey().getName());
-			} else if (data.isActivated()) {
+			} else if (data != null && data.isActivated() && data.getTimeLeft() > 0) {
+				boosterAmount++;
 				booster.getValue().add(player.getUniqueId());
-				activatedBoosters.add(booster.getKey().name());
+				activatedBoosters.add(booster.getKey().getName());
 			}
 
 		}

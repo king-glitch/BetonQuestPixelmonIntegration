@@ -29,7 +29,6 @@ public class RachamonCore extends JavaPlugin implements IModuleFactory<RachamonC
 	public void onLoad() {
 		instance = this;
 		moduleLogger = new LoggerUtil(Bukkit.getServer(), "RachamonCore");
-		moduleLogger.setDebug(true);
 		moduleLogger.info("Loading plugin...");
 	}
 
@@ -65,6 +64,8 @@ public class RachamonCore extends JavaPlugin implements IModuleFactory<RachamonC
 				"RachamonCore Language Config").build(LanguageConfig.class);
 
 		moduleLogger.info("Configs loaded!");
+
+		moduleLogger.setDebug(this.pluginConfig.generalConfig.isDebug());
 
 		moduleLogger.info("Registering modules...");
 		if (this.getPluginConfig().getModulesConfig().isBetonquestPixelmonIntegrationEnable()) {

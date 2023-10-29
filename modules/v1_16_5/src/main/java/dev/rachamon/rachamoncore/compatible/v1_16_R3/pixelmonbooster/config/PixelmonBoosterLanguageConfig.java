@@ -52,6 +52,14 @@ public class PixelmonBoosterLanguageConfig {
 		@Comment("Message when booster expired\n" + "variables:\n" + " - {booster}: booster name")
 		protected String boosterExpired = "&c{booster}&7 booster expired";
 
+		@Setting("activated")
+		@Comment("Message when booster activated")
+		protected String activated = "&a&lactivated&7";
+
+		@Setting("deactivated")
+		@Comment("Message when booster deactivated")
+		protected String deactivated = "&c&ldeactivated&7";
+
 		@Setting("booster-modification-added-success")
 		@Comment("Message when booster modification added success\n" + "variables:\n" + " - {booster}: booster name\n" + " - {time}: time\n" + " - {player}: player name")
 		protected String boosterModificationAddedSuccess = "&7successfully added &a{time} to &a{booster} &7booster for &a{player}";
@@ -74,7 +82,7 @@ public class PixelmonBoosterLanguageConfig {
 
 		@Setting("booster-info")
 		@Comment("Message when booster info\n" + "variables:\n" + " - {booster}: booster name\n" + " - {time}: time\n" + " - {activated}: activated")
-		protected String boosterInfo = "&8- &a{booster} &7booster, &a{time} &7left. &a{activated}";
+		protected String boosterInfo = "&8- &2&l{booster}&7 booster with &a{time} hh:mm:ss &7left. &fstatus&7: &a{activated}";
 
 		@Setting("booster-join-info")
 		@Comment("Message when booster info")
@@ -135,6 +143,22 @@ public class PixelmonBoosterLanguageConfig {
 		@Setting("pixelmon-extra-drops-item-template")
 		@Comment("Message when pixelmon extra drops\n" + "variables:\n" + " - {amount}: amount\n" + " - {item}: item name")
 		protected String pixelmonExtraDropsItemTemplate = "&8x&a{amount} &2{item}&7";
+
+		@Setting("hidden-ability-spawn-success")
+		@Comment("Message when hidden ability spawn success\n" + "variables:\n" + " - {pokemon}: pokemon name")
+		protected String hiddenAbilitySpawnSuccess = "&7The &a{pokemon} &7spawned with hidden ability by hidden ability booster";
+
+		@Setting("shiny-spawn-success")
+		@Comment("Message when shiny spawn success\n" + "variables:\n" + " - {pokemon}: pokemon name")
+		protected String shinySpawnSuccess = "&7The &a{pokemon} &7spawned with shiny by shiny booster";
+
+		@Setting("boss-spawn-success")
+		@Comment("Message when boss spawn success\n" + "variables:\n" + " - {pokemon}: pokemon name")
+		protected String bossSpawnSuccess = "&7The &a{pokemon} &7spawned with boss by boss booster";
+
+		@Setting("more-pokemon-spawn-success")
+		@Comment("Message when more pokemon spawn success\n" + "variables:\n" + " - {pokemon}: pokemon name")
+		protected String morePokemonSpawnSuccess = "&7The &a{pokemon} &7spawned by the pokemon spawn booster";
 	}
 
 }

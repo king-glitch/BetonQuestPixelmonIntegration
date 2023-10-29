@@ -30,6 +30,7 @@ public class BoosterService {
 		boosters.put(BoosterType.HATCH, new PixelmonEggHatchBooster(plugin));
 		boosters.put(BoosterType.CAPTURE, new PixelmonCaptureBooster(plugin));
 		boosters.put(BoosterType.EXP, new PixelmonExpBooster(plugin));
+		boosters.put(BoosterType.BOSS, new PixelmonBossSpawnRateBooster(plugin));
 
 
 		this.module.getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(this.module.getPlugin(), () -> {

@@ -35,9 +35,14 @@ public class InfoCommand extends AbstractCommand {
 
 			dataText.append(module.getLocale()
 					.raw(s -> s.getGeneralConfig().getBoosterInfo())
-					.process("booster", booster.getKey().name())
+					.process("booster", booster.getKey().getName())
 					.process("time", BoosterUtil.secondsToTime(boosterData.getTimeLeft()))
-					.process("activated", boosterData.isActivated())
+					.process(
+							"activated",
+							boosterData.isActivated() && boosterData.getTimeLeft() > 0 ? module.getLocale()
+									.raw(s -> s.getGeneralConfig().getActivated())
+									.get() : module.getLocale().raw(s -> s.getGeneralConfig().getDeactivated()).get()
+					)
 					.get()).append("\n");
 		}
 
