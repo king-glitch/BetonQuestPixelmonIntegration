@@ -1,6 +1,7 @@
 package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands;
 
 import dev.rachamon.rachamoncore.api.commands.AbstractCommand;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
@@ -49,17 +50,29 @@ public class SettingsBoostCommand extends AbstractCommand {
 		if (args[1].equalsIgnoreCase("pause")) {
 			try {
 
-				if (!this.module.getBoosterService()
-						.isPlayerBoosterActivated(player.getUniqueId(), BoosterType.valueOf(args[0]))) {
+				PixelmonBoosterPlayerData.BoosterData boosterData = this.module.getBoosterService()
+						.get(player, boosterType);
+
+				if (boosterData == null || boosterData.getTimeLeft() <= 0) {
 					player.sendMessage(this.module.getLocale()
-							.from(s -> s.getGeneralConfig().getBoosterAlreadyPause())
-							.process("booster", args[0])
+							.from(s -> s.getGeneralConfig().getBoosterNoTime())
+							.process("booster", boosterType.getName())
 							.get());
 
 					return ReturnType.FAILURE;
 				}
 
-				this.module.getBoosterService().pause(player, BoosterType.valueOf(args[0]));
+				if (!this.module.getBoosterService()
+						.isPlayerBoosterActivated(player.getUniqueId(), boosterType)) {
+					player.sendMessage(this.module.getLocale()
+							.from(s -> s.getGeneralConfig().getBoosterAlreadyPause())
+							.process("booster", boosterType.getName())
+							.get());
+
+					return ReturnType.FAILURE;
+				}
+
+				this.module.getBoosterService().pause(player, boosterType);
 				player.sendMessage(this.module.getLocale()
 						.from(s -> s.getGeneralConfig().getBoosterPause())
 						.process("booster", boosterType.getName())
@@ -68,8 +81,20 @@ public class SettingsBoostCommand extends AbstractCommand {
 				return ReturnType.FAILURE;
 			}
 		} else if (args[1].equalsIgnoreCase("resume")) {
+			PixelmonBoosterPlayerData.BoosterData boosterData = this.module.getBoosterService()
+					.get(player, boosterType);
+
+			if (boosterData == null || boosterData.getTimeLeft() <= 0) {
+				player.sendMessage(this.module.getLocale()
+						.from(s -> s.getGeneralConfig().getBoosterNoTime())
+						.process("booster", boosterType.getName())
+						.get());
+
+				return ReturnType.FAILURE;
+			}
+
 			if (this.module.getBoosterService()
-					.isPlayerBoosterActivated(player.getUniqueId(), BoosterType.valueOf(args[0]))) {
+					.isPlayerBoosterActivated(player.getUniqueId(), boosterType)) {
 				player.sendMessage(this.module.getLocale()
 						.from(s -> s.getGeneralConfig().getBoosterAlreadyResume())
 						.process("booster", boosterType.getName())
@@ -78,7 +103,7 @@ public class SettingsBoostCommand extends AbstractCommand {
 				return ReturnType.FAILURE;
 			}
 			try {
-				this.module.getBoosterService().resume(player, BoosterType.valueOf(args[0]));
+				this.module.getBoosterService().resume(player, boosterType);
 				player.sendMessage(this.module.getLocale()
 						.from(s -> s.getGeneralConfig().getBoosterResume())
 						.process("booster", boosterType.getName())

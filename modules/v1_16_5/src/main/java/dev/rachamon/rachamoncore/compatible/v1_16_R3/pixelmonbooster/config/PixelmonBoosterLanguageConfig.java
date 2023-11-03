@@ -36,6 +36,10 @@ public class PixelmonBoosterLanguageConfig {
 		@Comment("Message when booster resume\n" + "variables:\n" + " - {booster}: booster name")
 		protected String boosterResume = "&a{booster}&7 booster resume";
 
+		@Setting("booster-no-time")
+		@Comment("Message when booster no time\n" + "variables:\n" + " - {booster}: booster name")
+		protected String boosterNoTime = "Your &c{booster}&7 booster has no time left";
+
 		@Setting("booster-already-resume")
 		@Comment("Message when booster already resume\n" + "variables:\n" + " - {booster}: booster name")
 		protected String boosterAlreadyResume = "&c{booster}&7 booster already resume";
