@@ -38,6 +38,9 @@ public class MainConfig {
 		@Setting(value = "betonquest-pixelmon-integration-enable")
 		@Comment("Enable BetonQuest Pixelmon Integration Module [default: true]")
 		protected boolean betonquestPixelmonIntegrationEnable = true;
+		@Setting(value = "pixelmon-drops-logger-enable")
+		@Comment("Enable PixelmonDropsLogger Module [default: true]")
+		protected boolean pixelmonDropsLoggerEnable = true;
 	}
 
 }

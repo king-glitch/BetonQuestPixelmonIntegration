@@ -101,7 +101,7 @@ public class PixelmonDropListener {
 					.process("data", data.toString())
 					.get());
 		} catch (Exception e) {
-			e.printStackTrace();
+		// 	e.printStackTrace();
 		}
 
 	}

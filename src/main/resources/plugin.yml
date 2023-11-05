@@ -22,3 +22,8 @@ commands:
         usage: /<command> [args]
         aliases: [ pb ]
         default: true
+    pixelmondropslogger:
+        description: PixelmonDropsLogger Command
+        usage: /<command> [args]
+        aliases: [ pdl ]
+        default: true

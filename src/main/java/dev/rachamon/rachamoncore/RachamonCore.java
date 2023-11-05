@@ -6,6 +6,7 @@ import dev.rachamon.rachamoncore.api.factory.ConfigFactory;
 import dev.rachamon.rachamoncore.api.factory.modules.BetonQuestPixelmonIntegrationFactory;
 import dev.rachamon.rachamoncore.api.factory.modules.PaletteTokensFactory;
 import dev.rachamon.rachamoncore.api.factory.modules.PixelmonBoosterFactory;
+import dev.rachamon.rachamoncore.api.factory.modules.PixelmonDropsLoggerFactory;
 import dev.rachamon.rachamoncore.api.utils.LoggerUtil;
 import dev.rachamon.rachamoncore.config.LanguageConfig;
 import dev.rachamon.rachamoncore.config.MainConfig;
@@ -82,6 +83,10 @@ public class RachamonCore extends JavaPlugin implements IModuleFactory<RachamonC
 
 		if (this.getPluginConfig().getModulesConfig().isPixelmonBoosterEnable()) {
 			PixelmonBoosterFactory.create(this);
+		}
+
+		if (this.getPluginConfig().getModulesConfig().isPixelmonDropsLoggerEnable()) {
+			PixelmonDropsLoggerFactory.create(this);
 		}
 
 		moduleLogger.info("Features registered!");
