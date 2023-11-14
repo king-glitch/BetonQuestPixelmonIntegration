@@ -44,7 +44,8 @@ public class BoosterBase {
 		this.task = module.getPlugin()
 				.getServer()
 				.getScheduler()
-				.runTaskTimerAsynchronously(module.getPlugin(),
+				.runTaskTimerAsynchronously(
+						module.getPlugin(),
 						this::process,
 						this.interval * 20L,
 						this.interval * 20L
@@ -128,7 +129,9 @@ public class BoosterBase {
 
 	public void remove(UUID uuid) {
 		this.players.remove(uuid);
-		this.process();
+		if (this.players.isEmpty()) {
+			this.shutdown();
+		}
 	}
 
 	public void setGlobalActivate(boolean globalActivate) {

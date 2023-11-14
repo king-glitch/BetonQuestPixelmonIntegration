@@ -26,6 +26,14 @@ public class BattleEndListener {
 			return;
 		}
 
+		if (event.trainer == null) {
+			return;
+		}
+
+		if (event.trainer.winMoney == 0) {
+			return;
+		}
+
 		ServerPlayerEntity player = event.player;
 		TrainerMoneyBooster booster = (TrainerMoneyBooster) BoosterService.getBoosters()
 				.get(BoosterType.BATTLE_WINNING);
