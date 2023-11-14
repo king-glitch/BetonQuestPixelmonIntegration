@@ -17,7 +17,7 @@ import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.Boos
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonBossSpawnRateBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonHASpawnRateBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonShinySpawnRateBooster;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,9 +30,9 @@ import java.util.concurrent.ExecutionException;
 
 public class PixelmonSpawnListener {
 
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public PixelmonSpawnListener(PixelmonBoosterFactoryImpl instance) {
+	public PixelmonSpawnListener(PixelmonBooster instance) {
 		this.module = instance;
 	}
 

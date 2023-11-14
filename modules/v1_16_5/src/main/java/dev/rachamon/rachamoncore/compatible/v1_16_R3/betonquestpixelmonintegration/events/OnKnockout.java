@@ -3,7 +3,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegrat
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.PixelmonKnockoutEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.factory.BetonQuestObjectiveFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.BetonQuestPixelmonIntegration;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -79,11 +79,11 @@ public class OnKnockout extends Objective {
 		}
 
 
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+		BetonQuestPixelmonIntegration.instance.getModuleLogger()
 				.debug("pixelmon.knockout: " + event.source.getPlayerOwner().getName());
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+		BetonQuestPixelmonIntegration.instance.getModuleLogger()
 				.debug("pixelmon.knockout: " + event.pokemon.getPokemonName());
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+		BetonQuestPixelmonIntegration.instance.getModuleLogger()
 				.debug("pixelmon.knockout: " + SpecUtil.match(pixelmon, SpecUtil.parseSpecs(specs)));
 
 

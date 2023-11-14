@@ -4,7 +4,7 @@ import dev.rachamon.rachamoncore.api.commands.AbstractCommand;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterBase;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.utils.BoosterUtil;
 import org.bukkit.command.CommandSender;
@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 public class InfoCommand extends AbstractCommand {
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public InfoCommand(PixelmonBoosterFactoryImpl module) {
+	public InfoCommand(PixelmonBooster module) {
 		super(CommandType.PLAYER_ONLY, false, "info");
 		this.module = module;
 	}

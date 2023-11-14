@@ -1,15 +1,15 @@
 package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands.admin;
 
 import dev.rachamon.rachamoncore.api.commands.AbstractCommand;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
 public class AdminReloadCommand extends AbstractCommand {
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public AdminReloadCommand(PixelmonBoosterFactoryImpl module) {
+	public AdminReloadCommand(PixelmonBooster module) {
 		super(CommandType.BOTH, false, "reload");
 		this.module = module;
 	}

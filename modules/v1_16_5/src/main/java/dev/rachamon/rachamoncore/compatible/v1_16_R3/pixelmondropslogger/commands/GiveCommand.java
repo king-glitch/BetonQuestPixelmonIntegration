@@ -2,7 +2,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmondropslogger.comman
 
 import dev.rachamon.rachamoncore.api.commands.AbstractCommand;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmondropslogger.config.PixelmonDropsLoggerLog;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmondropslogger.factory.PixelmonDropsLoggerFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmondropslogger.PixelmonDropsLoggerFactoryImpl;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

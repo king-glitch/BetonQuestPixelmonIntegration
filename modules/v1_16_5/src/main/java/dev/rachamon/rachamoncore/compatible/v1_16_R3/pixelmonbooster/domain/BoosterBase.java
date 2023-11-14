@@ -2,7 +2,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain;
 
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterConfig;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -15,7 +15,7 @@ import java.util.UUID;
 public class BoosterBase {
 	private final BoosterType boosterType;
 	private PixelmonBoosterConfig.Booster config;
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 	private int interval;
 
 	private boolean isRunning = false;
@@ -24,7 +24,7 @@ public class BoosterBase {
 	private boolean isGlobalActivate = false;
 
 
-	public BoosterBase(PixelmonBoosterFactoryImpl module, BoosterType boosterType) {
+	public BoosterBase(PixelmonBooster module, BoosterType boosterType) {
 		this.boosterType = boosterType;
 		this.module = module;
 		this.reload();

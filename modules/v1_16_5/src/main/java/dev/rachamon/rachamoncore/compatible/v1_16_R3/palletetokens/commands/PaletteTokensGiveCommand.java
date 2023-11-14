@@ -8,7 +8,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.GenderProperties;
 import com.pixelmonmod.pixelmon.api.pokemon.species.palette.PaletteProperties;
 import dev.rachamon.rachamoncore.api.commands.AbstractCommand;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.palletetokens.factory.PaletteTokensFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.palletetokens.PaletteTokens;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 
 public class PaletteTokensGiveCommand extends AbstractCommand {
 
-	private final PaletteTokensFactoryImpl module;
+	private final PaletteTokens module;
 
-	public PaletteTokensGiveCommand(PaletteTokensFactoryImpl plugin) {
+	public PaletteTokensGiveCommand(PaletteTokens plugin) {
 		super(CommandType.BOTH, false, "give");
 		this.module = plugin;
 	}

@@ -2,7 +2,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands.a
 
 import dev.rachamon.rachamoncore.api.commands.AbstractCommand;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import org.bukkit.command.CommandSender;
 
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AdminGlobalBoostCommand extends AbstractCommand {
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public AdminGlobalBoostCommand(PixelmonBoosterFactoryImpl module) {
+	public AdminGlobalBoostCommand(PixelmonBooster module) {
 		super(CommandType.BOTH, false, "global");
 		this.module = module;
 	}

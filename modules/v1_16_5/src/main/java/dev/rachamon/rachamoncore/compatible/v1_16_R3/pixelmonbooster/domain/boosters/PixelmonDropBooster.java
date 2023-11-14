@@ -4,11 +4,11 @@ import dev.rachamon.rachamoncore.api.utils.ExpressionEvaluator;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterConfig;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterBase;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 
 public class PixelmonDropBooster extends BoosterBase {
 
-	public PixelmonDropBooster(PixelmonBoosterFactoryImpl module) {
+	public PixelmonDropBooster(PixelmonBooster module) {
 		super(module, BoosterType.DROP);
 	}
 

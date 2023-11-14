@@ -1,13 +1,11 @@
-package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory;
+package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster;
 
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import dev.rachamon.rachamoncore.api.IModuleFactory;
-import dev.rachamon.rachamoncore.api.commands.CommandManager;
 import dev.rachamon.rachamoncore.api.factory.ConfigFactory;
-import dev.rachamon.rachamoncore.api.factory.modules.PixelmonBoosterFactory;
+import dev.rachamon.rachamoncore.api.factory.ModuleFactory;
 import dev.rachamon.rachamoncore.api.locale.Locale;
-import dev.rachamon.rachamoncore.api.utils.LoggerUtil;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands.InfoCommand;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands.SettingsBoostCommand;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands.admin.AdminGlobalBoostCommand;
@@ -16,52 +14,30 @@ import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands.ad
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterConfig;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterLanguageConfig;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners.*;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.nio.file.Path;
-
 @Getter
-public class PixelmonBoosterFactoryImpl extends PixelmonBoosterFactory {
-	private final LoggerUtil moduleLogger;
-	private Path directory;
-	private final JavaPlugin plugin;
+public class PixelmonBooster extends ModuleFactory {
 	private PixelmonBoosterConfig config;
-	private ConfigFactory<PixelmonBoosterFactoryImpl, PixelmonBoosterPlayerData> playerDataConfigNode;
-	private ConfigFactory<PixelmonBoosterFactoryImpl, PixelmonBoosterConfig> configNode;
-	private PixelmonBoosterPlayerData playerData;
+	private ConfigFactory<PixelmonBooster, PixelmonBoosterPlayerData> playerDataConfigNode;
+	private ConfigFactory<PixelmonBooster, PixelmonBoosterConfig> configNode;
+	private final PixelmonBoosterPlayerData playerData;
 	private Locale<PixelmonBoosterLanguageConfig> locale;
-	private BoosterService boosterService;
-	private CommandManager commandManager;
-
+	private final BoosterService boosterService;
 	@Getter
-	public static PixelmonBoosterFactoryImpl instance;
+	public static PixelmonBooster instance;
 
 
-	public PixelmonBoosterFactoryImpl(IModuleFactory<? extends JavaPlugin> module) {
-		PixelmonBoosterFactoryImpl.instance = this;
-		this.moduleLogger = new LoggerUtil(module.getPlugin().getServer(), "PixelmonBooster");
-		this.plugin = (JavaPlugin) module;
+	public PixelmonBooster(IModuleFactory<? extends JavaPlugin> module) {
+		super(module.getPlugin(), "PixelmonBooster");
+		PixelmonBooster.instance = this;
 
-		moduleLogger.info("Initializing PixelmonBooster module...");
-		Path directory = module.getDirectory().resolve("modules").resolve("PixelmonBooster");
-		if (!directory.toFile().exists()) {
-			boolean success = directory.toFile().mkdir();
-			if (!success) {
-				moduleLogger.error("Error creating directory: " + directory);
-				return;
-			}
 
-			moduleLogger.info("Created directory: " + directory);
-		}
-
-		this.directory = directory;
-
-		moduleLogger.info("Loading configs...");
-		ConfigFactory<PixelmonBoosterFactoryImpl, PixelmonBoosterLanguageConfig> locale = new ConfigFactory<>(
+		this.getModuleLogger().info("Loading configs...");
+		ConfigFactory<PixelmonBooster, PixelmonBoosterLanguageConfig> locale = new ConfigFactory<>(
 				this,
 				"language.yaml"
 		);
@@ -78,12 +54,11 @@ public class PixelmonBoosterFactoryImpl extends PixelmonBoosterFactory {
 						.build(PixelmonBoosterLanguageConfig.class),
 				s -> s.getGeneralConfig().getPrefix()
 		);
-		moduleLogger.info("Loaded configs!");
+		this.getModuleLogger().info("Loaded configs!");
 		this.boosterService = new BoosterService(this);
 
-		moduleLogger.info("Registering commands...");
-		this.commandManager = new CommandManager(this.getPlugin());
-		this.commandManager.mainCommand("pixelmonbooster")
+		this.getModuleLogger().info("Registering commands...");
+		this.getCommandManager().mainCommand("pixelmonbooster")
 				.subCommands(
 						new InfoCommand(this),
 						new SettingsBoostCommand(this),
@@ -92,10 +67,10 @@ public class PixelmonBoosterFactoryImpl extends PixelmonBoosterFactory {
 						new AdminReloadCommand(this)
 				);
 
-		moduleLogger.info("Registering listeners...");
-		this.plugin.getServer().getPluginManager().registerEvents(new PlayerActionListener(), this.getPlugin());
+		this.getModuleLogger().info("Registering listeners...");
+		this.getPlugin().getServer().getPluginManager().registerEvents(new PlayerActionListener(), this.getPlugin());
 
-		moduleLogger.info("Registering events...");
+		this.getModuleLogger().info("Registering events...");
 		BattleEndListener battleEndListener = new BattleEndListener(this);
 		PixelmonDropListener dropListener = new PixelmonDropListener(this);
 		PixelmonSpawnListener spawnListener = new PixelmonSpawnListener(this);
@@ -112,26 +87,21 @@ public class PixelmonBoosterFactoryImpl extends PixelmonBoosterFactory {
 		Pixelmon.EVENT_BUS.addListener(captureListener::onRaidCapture);
 
 
-		moduleLogger.info("Registered commands!");
+		this.getModuleLogger().info("Registered commands!");
 
-		moduleLogger.info("Initialized PixelmonBooster module!");
+		this.getModuleLogger().info("Initialized PixelmonBooster module!");
 
-	}
-
-	@Override
-	public CommandManager getCommandManager() {
-		return this.commandManager;
 	}
 
 	@Override
 	public void unload() {
-		this.moduleLogger.info("Unloading PixelmonBooster module...");
-		this.moduleLogger.info("Unloaded PixelmonBooster module!");
+		this.getModuleLogger().info("Unloading PixelmonBooster module...");
+		this.getModuleLogger().info("Unloaded PixelmonBooster module!");
 	}
 
 	public void reload() {
-		moduleLogger.info("Loading configs...");
-		ConfigFactory<PixelmonBoosterFactoryImpl, PixelmonBoosterLanguageConfig> locale = new ConfigFactory<>(
+		this.getModuleLogger().info("Loading configs...");
+		ConfigFactory<PixelmonBooster, PixelmonBoosterLanguageConfig> locale = new ConfigFactory<>(
 				this,
 				"language.yaml"
 		);
@@ -145,7 +115,7 @@ public class PixelmonBoosterFactoryImpl extends PixelmonBoosterFactory {
 
 		this.boosterService.reload();
 
-		moduleLogger.info("successfully reloaded configs!");
+		this.getModuleLogger().info("successfully reloaded configs!");
 	}
 
 

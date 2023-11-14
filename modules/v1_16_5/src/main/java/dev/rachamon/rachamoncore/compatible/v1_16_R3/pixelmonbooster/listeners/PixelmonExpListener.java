@@ -3,16 +3,16 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners;
 import com.pixelmonmod.pixelmon.api.events.ExperienceGainEvent;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonExpBooster;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.bukkit.entity.Player;
 
 public class PixelmonExpListener {
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public PixelmonExpListener(PixelmonBoosterFactoryImpl instance) {
+	public PixelmonExpListener(PixelmonBooster instance) {
 		this.module = instance;
 	}
 

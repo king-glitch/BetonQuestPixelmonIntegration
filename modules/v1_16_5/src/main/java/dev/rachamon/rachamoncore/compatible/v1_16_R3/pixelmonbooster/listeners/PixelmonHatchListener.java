@@ -3,16 +3,16 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners;
 import com.pixelmonmod.pixelmon.api.daycare.event.DayCareEvent;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonEggHatchBooster;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.bukkit.entity.Player;
 
 public class PixelmonHatchListener {
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public PixelmonHatchListener(PixelmonBoosterFactoryImpl instance) {
+	public PixelmonHatchListener(PixelmonBooster instance) {
 		this.module = instance;
 	}
 

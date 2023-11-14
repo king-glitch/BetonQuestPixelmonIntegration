@@ -41,6 +41,9 @@ public class MainConfig {
 		@Setting(value = "pixelmon-drops-logger-enable")
 		@Comment("Enable PixelmonDropsLogger Module [default: true]")
 		protected boolean pixelmonDropsLoggerEnable = true;
+		@Setting(value = "battle-pass-pixelmon-integration-enable")
+		@Comment("Enable BattlePass Pixelmon Integration Module [default: true]")
+		protected boolean battlePassPixelmonIntegrationEnable = true;
 	}
 
 }

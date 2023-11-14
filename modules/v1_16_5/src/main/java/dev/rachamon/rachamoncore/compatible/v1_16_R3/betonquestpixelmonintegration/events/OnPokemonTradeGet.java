@@ -3,7 +3,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegrat
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.PixelmonTradeEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.factory.BetonQuestObjectiveFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.BetonQuestPixelmonIntegration;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -72,11 +72,11 @@ public class OnPokemonTradeGet extends Objective {
 		Pokemon pixelmon1 = event.getPokemon1();
 		Pokemon pixelmon2 = event.getPokemon2();
 
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.trade.get: " + player1.getName());
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.trade.get: " + player2.getName());
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+		BetonQuestPixelmonIntegration.instance.getModuleLogger().debug("pixelmon.trade.get: " + player1.getName());
+		BetonQuestPixelmonIntegration.instance.getModuleLogger().debug("pixelmon.trade.get: " + player2.getName());
+		BetonQuestPixelmonIntegration.instance.getModuleLogger()
 				.debug("pixelmon.trade.get: " + SpecUtil.match(pixelmon1, SpecUtil.parseSpecs(specs)));
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+		BetonQuestPixelmonIntegration.instance.getModuleLogger()
 				.debug("pixelmon.trade.get: " + SpecUtil.match(pixelmon2, SpecUtil.parseSpecs(specs)));
 
 

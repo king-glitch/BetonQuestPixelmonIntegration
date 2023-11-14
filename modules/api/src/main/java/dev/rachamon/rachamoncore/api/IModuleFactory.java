@@ -15,5 +15,9 @@ public interface IModuleFactory<T> {
 
 	CommandManager getCommandManager();
 
+	String getName();
+
 	void unload();
+
+	void load();
 }

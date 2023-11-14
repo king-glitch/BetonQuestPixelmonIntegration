@@ -3,7 +3,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.listeners;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.PixelmonBoosterPlayerData;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterBase;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +21,7 @@ public class PlayerActionListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		PixelmonBoosterFactoryImpl module = PixelmonBoosterFactoryImpl.getInstance();
+		PixelmonBooster module = PixelmonBooster.getInstance();
 		Map<String, PixelmonBoosterPlayerData.BoosterData> boosterData = module.getPlayerData()
 				.getData()
 				.get(player.getUniqueId().toString());

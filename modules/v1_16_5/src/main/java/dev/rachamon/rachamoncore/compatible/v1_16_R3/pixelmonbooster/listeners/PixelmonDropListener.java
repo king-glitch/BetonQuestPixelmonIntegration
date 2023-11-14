@@ -7,7 +7,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.pixelmonmod.pixelmon.entities.pixelmon.drops.DroppedItem;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonDropBooster;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.Random;
 
 public class PixelmonDropListener {
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public PixelmonDropListener(PixelmonBoosterFactoryImpl instance) {
+	public PixelmonDropListener(PixelmonBooster instance) {
 		this.module = instance;
 	}
 

@@ -2,7 +2,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegrat
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.factory.BetonQuestObjectiveFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.BetonQuestPixelmonIntegration;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -73,9 +73,9 @@ public class OnHatchPokemonEgg extends Objective {
 		}
 
 
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+		BetonQuestPixelmonIntegration.instance.getModuleLogger()
 				.debug("pixelmon.hatch: " + event.getPokemon().getDisplayName());
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+		BetonQuestPixelmonIntegration.instance.getModuleLogger()
 				.debug("pixelmon.hatch: " + SpecUtil.match(event.getPokemon(), SpecUtil.parseSpecs(specs)));
 
 

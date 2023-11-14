@@ -2,7 +2,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegrat
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.ApricornEvent;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.factory.BetonQuestObjectiveFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.BetonQuestPixelmonIntegration;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -81,10 +81,10 @@ public class OnApricornHarvest extends Objective {
 		}
 
 
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+		BetonQuestPixelmonIntegration.instance.getModuleLogger()
 				.debug("pixelmon.apricorn.harvest: " + event.getApricorn().apricorn().apricorn.name());
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger().debug("pixelmon.apricorn.harvest: " + apricorn);
-		BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+		BetonQuestPixelmonIntegration.instance.getModuleLogger().debug("pixelmon.apricorn.harvest: " + apricorn);
+		BetonQuestPixelmonIntegration.instance.getModuleLogger()
 				.debug("pixelmon.apricorn.harvest: " + (apricorn.equals("*") || event.getApricorn()
 						.apricorn().apricorn.name()
 						.toLowerCase()

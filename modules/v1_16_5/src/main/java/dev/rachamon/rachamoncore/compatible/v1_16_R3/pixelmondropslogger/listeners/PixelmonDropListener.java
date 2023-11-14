@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.pixelmonmod.pixelmon.api.events.DropEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.pixelmonmod.pixelmon.entities.pixelmon.drops.DroppedItem;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmondropslogger.factory.PixelmonDropsLoggerFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmondropslogger.PixelmonDropsLoggerFactoryImpl;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

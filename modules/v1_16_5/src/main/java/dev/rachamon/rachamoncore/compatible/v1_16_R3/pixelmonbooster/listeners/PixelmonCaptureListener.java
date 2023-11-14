@@ -4,7 +4,7 @@ import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.catching.CaptureValues;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.PixelmonCaptureBooster;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -12,9 +12,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.bukkit.entity.Player;
 
 public class PixelmonCaptureListener {
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public PixelmonCaptureListener(PixelmonBoosterFactoryImpl instance) {
+	public PixelmonCaptureListener(PixelmonBooster instance) {
 		this.module = instance;
 	}
 

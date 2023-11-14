@@ -3,7 +3,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegrat
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.LostToWildPixelmonEvent;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.factory.BetonQuestObjectiveFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.BetonQuestPixelmonIntegration;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.betonquestpixelmonintegration.utils.SpecUtil;
 import lombok.Getter;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -82,9 +82,9 @@ public class OnDefeated extends Objective {
 		PixelmonWrapper[] pixelmon = event.wpp.allPokemon;
 		for (PixelmonWrapper wrapper : pixelmon) {
 
-			BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+			BetonQuestPixelmonIntegration.instance.getModuleLogger()
 					.debug("pixelmon.defeated: " + wrapper.pokemon.getDisplayName());
-			BetonQuestObjectiveFactoryImpl.instance.getModuleLogger()
+			BetonQuestPixelmonIntegration.instance.getModuleLogger()
 					.debug("pixelmon.defeated: " + SpecUtil.match(wrapper.pokemon, SpecUtil.parseSpecs(specs)));
 
 			// check if match the Pokémon specs

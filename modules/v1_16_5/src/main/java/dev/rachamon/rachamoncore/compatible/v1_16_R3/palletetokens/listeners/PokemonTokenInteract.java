@@ -1,7 +1,7 @@
 package dev.rachamon.rachamoncore.compatible.v1_16_R3.palletetokens.listeners;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.palletetokens.factory.PaletteTokensFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.palletetokens.PaletteTokens;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
@@ -13,9 +13,9 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 
 public class PokemonTokenInteract {
-	private final PaletteTokensFactoryImpl plugin;
+	private final PaletteTokens plugin;
 
-	public PokemonTokenInteract(PaletteTokensFactoryImpl plugin) {
+	public PokemonTokenInteract(PaletteTokens plugin) {
 		this.plugin = plugin;
 	}
 

@@ -4,7 +4,7 @@ import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.config.Pixe
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterBase;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.boosters.*;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
@@ -18,9 +18,9 @@ import java.util.UUID;
 public class BoosterService {
 	@Getter
 	private static Map<BoosterType, BoosterBase> boosters = new HashMap<>();
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public BoosterService(PixelmonBoosterFactoryImpl plugin) {
+	public BoosterService(PixelmonBooster plugin) {
 		this.module = plugin;
 
 		boosters.put(BoosterType.BATTLE_WINNING, new TrainerMoneyBooster(plugin));

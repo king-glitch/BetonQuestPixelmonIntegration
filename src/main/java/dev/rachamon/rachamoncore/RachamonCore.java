@@ -3,10 +3,7 @@ package dev.rachamon.rachamoncore;
 import dev.rachamon.rachamoncore.api.IModuleFactory;
 import dev.rachamon.rachamoncore.api.commands.CommandManager;
 import dev.rachamon.rachamoncore.api.factory.ConfigFactory;
-import dev.rachamon.rachamoncore.api.factory.modules.BetonQuestPixelmonIntegrationFactory;
-import dev.rachamon.rachamoncore.api.factory.modules.PaletteTokensFactory;
-import dev.rachamon.rachamoncore.api.factory.modules.PixelmonBoosterFactory;
-import dev.rachamon.rachamoncore.api.factory.modules.PixelmonDropsLoggerFactory;
+import dev.rachamon.rachamoncore.api.factory.ModuleFactory;
 import dev.rachamon.rachamoncore.api.utils.LoggerUtil;
 import dev.rachamon.rachamoncore.config.LanguageConfig;
 import dev.rachamon.rachamoncore.config.MainConfig;
@@ -35,7 +32,33 @@ public class RachamonCore extends JavaPlugin implements IModuleFactory<RachamonC
 
 	@Override
 	public void onEnable() {
+		this.load();
+	}
 
+	@Override
+	public void onDisable() {
+		this.unload();
+	}
+
+
+	@Override
+	public Path getDirectory() {
+		return this.getDataFolder().toPath();
+	}
+
+	@Override
+	public CommandManager getCommandManager() {
+		return null;
+	}
+
+	@Override
+	public void unload() {
+		this.getModuleLogger().info("Unloading RachamonCore module...");
+		this.getModuleLogger().info("Unloaded RachamonCore module!");
+	}
+
+	@Override
+	public void load() {
 		if (!this.getDataFolder().exists()) {
 			boolean success = this.getDataFolder().mkdir();
 			if (!success) {
@@ -73,47 +96,28 @@ public class RachamonCore extends JavaPlugin implements IModuleFactory<RachamonC
 			if (Bukkit.getPluginManager()
 					.getPlugin("BetonQuest") != null && Objects.requireNonNull(Bukkit.getPluginManager()
 					.getPlugin("BetonQuest")).isEnabled()) {
-				BetonQuestPixelmonIntegrationFactory.create(this);
+				ModuleFactory.create(this, ".betonquestpixelmonintegration.BetonQuestPixelmonIntegration");
 			}
 		}
 
 		if (this.getPluginConfig().getModulesConfig().isPaletteTokensEnable()) {
-			PaletteTokensFactory.create(this);
+			ModuleFactory.create(this, ".palettetokens.PaletteTokens");
 		}
 
 		if (this.getPluginConfig().getModulesConfig().isPixelmonBoosterEnable()) {
-			PixelmonBoosterFactory.create(this);
+			ModuleFactory.create(this, ".pixelmonbooster.PixelmonBooster");
 		}
 
 		if (this.getPluginConfig().getModulesConfig().isPixelmonDropsLoggerEnable()) {
-			PixelmonDropsLoggerFactory.create(this);
+			ModuleFactory.create(this, ".pixelmondropslogger.PixelmonDropsLogger");
+		}
+
+		if (this.getPluginConfig().getModulesConfig().isBattlePassPixelmonIntegrationEnable()) {
+			ModuleFactory.create(this, ".battlepasspixelmonintegration.BattlePassPixelmonIntegration");
 		}
 
 		moduleLogger.info("Features registered!");
 		moduleLogger.info("Plugin started!");
-
-	}
-
-	@Override
-	public void onDisable() {
-		this.unload();
-	}
-
-
-	@Override
-	public Path getDirectory() {
-		return this.getDataFolder().toPath();
-	}
-
-	@Override
-	public CommandManager getCommandManager() {
-		return null;
-	}
-
-	@Override
-	public void unload() {
-		this.getModuleLogger().info("Unloading RachamonCore module...");
-		this.getModuleLogger().info("Unloaded RachamonCore module!");
 	}
 
 }

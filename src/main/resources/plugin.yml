@@ -2,8 +2,8 @@ name: RachamonCore
 version: 0.0.1
 author: Rachamon
 main: dev.rachamon.rachamoncore.RachamonCore
-depend: [ BetonQuest ]
-softdepend: [ ]
+depend: []
+softdepend: [ BetonQuest, BattlePass ]
 api-version: 1.13
 
 commands:

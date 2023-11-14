@@ -2,7 +2,7 @@ package dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.commands.a
 
 import dev.rachamon.rachamoncore.api.commands.AbstractCommand;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.domain.BoosterType;
-import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.factory.PixelmonBoosterFactoryImpl;
+import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.PixelmonBooster;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.service.BoosterService;
 import dev.rachamon.rachamoncore.compatible.v1_16_R3.pixelmonbooster.utils.BoosterUtil;
 import org.bukkit.command.CommandSender;
@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AdminModifyBoostCommand extends AbstractCommand {
-	private final PixelmonBoosterFactoryImpl module;
+	private final PixelmonBooster module;
 
-	public AdminModifyBoostCommand(PixelmonBoosterFactoryImpl plugin) {
+	public AdminModifyBoostCommand(PixelmonBooster plugin) {
 		super(CommandType.BOTH, false, "modify");
 		this.module = plugin;
 	}
